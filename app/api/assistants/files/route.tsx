@@ -1,21 +1,15 @@
 import { assistantId } from "@/app/assistant-config";
 import { openai } from "@/app/openai";
-import { NextRequest, NextResponse } from "next/server";
 
 // upload file to assistant's vector store
-export const POST = async (req: NextRequest, res: NextResponse) => {
-  const formData = await req.formData(); // process file as FormData
+export async function POST(request: { formData: () => any; }) {
+  const formData = await request.formData(); // process file as FormData
   const file = formData.get("file"); // retrieve the single file from FormData
-  
-  if (!file) {
-    return new Response("No file provided", { status: 400 });
-  }
-
   const vectorStoreId = await getOrCreateVectorStore(); // get or create vector store
 
   // upload using the file stream
   const openaiFile = await openai.files.create({
-    file: file as File,
+    file: file,
     purpose: "assistants",
   });
 
@@ -24,11 +18,11 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     file_id: openaiFile.id,
   });
   return new Response();
-};
+}
 
 // list files in assistant's vector store
-export const GET = async (req: NextRequest, res: NextResponse) => {
-  const vectorStoreId = await getOrCreateVectorStore();
+export async function GET() {
+  const vectorStoreId = await getOrCreateVectorStore(); // get or create vector store
   const fileList = await openai.beta.vectorStores.files.list(vectorStoreId);
 
   const filesArray = await Promise.all(
@@ -46,18 +40,18 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
     })
   );
   return Response.json(filesArray);
-};
+}
 
 // delete file from assistant's vector store
-export const DELETE = async (req: NextRequest, res: NextResponse) => {
-  const body = await req.json();
+export async function DELETE(request: { json: () => any; }) {
+  const body = await request.json();
   const fileId = body.fileId;
 
   const vectorStoreId = await getOrCreateVectorStore(); // get or create vector store
   await openai.beta.vectorStores.files.del(vectorStoreId, fileId); // delete file from vector store
 
   return new Response();
-};
+}
 
 /* Helper functions */
 
