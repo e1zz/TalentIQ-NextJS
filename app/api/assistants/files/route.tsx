@@ -6,11 +6,16 @@ import { NextRequest } from "next/server";
 export async function POST(request: NextRequest) {
   const formData = await request.formData(); // process file as FormData
   const file = formData.get("file"); // retrieve the single file from FormData
+  
+  if (!file) {
+    return new Response("No file provided", { status: 400 });
+  }
+
   const vectorStoreId = await getOrCreateVectorStore(); // get or create vector store
 
   // upload using the file stream
   const openaiFile = await openai.files.create({
-    file: file,
+    file: file as File,
     purpose: "assistants",
   });
 
@@ -44,7 +49,7 @@ export async function GET() {
 }
 
 // delete file from assistant's vector store
-export async function DELETE(request: { json: () => any; }) {
+export async function DELETE(request: NextRequest) {
   const body = await request.json();
   const fileId = body.fileId;
 
