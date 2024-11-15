@@ -1,16 +1,13 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
-import styles from "./file-viewer.module.css";
 
 const TrashIcon = () => (
   <svg
-    className={styles.fileDeleteIcon}
+    className="h-4 w-4 text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 12 12"
-    height="12"
-    width="12"
-    fill="#FFFFFF"
+    fill="currentColor"
   >
     <path
       fillRule="inherit"
@@ -57,37 +54,66 @@ const FileViewer = () => {
   };
 
   return (
-    <div className={styles.fileViewer}>
-      <div
-        className={`${styles.filesList} ${
-          files.length !== 0 ? styles.grow : ""
-        }`}
-      >
+    <div className="w-full h-full flex flex-col">
+      <div className={`flex-1 overflow-auto ${files.length === 0 ? 'flex items-center justify-center' : ''}`}>
         {files.length === 0 ? (
-          <div className={styles.title}>Attach files to test file search</div>
+          <p className="text-gray-400 text-sm font-light italic">
+            Attach files to test file search
+          </p>
         ) : (
-          files.map((file) => (
-            <div key={file.file_id} className={styles.fileEntry}>
-              <div className={styles.fileName}>
-                <span className={styles.fileName}>{file.filename}</span>
-                <span className={styles.fileStatus}>{file.status}</span>
+          <div className="space-y-2">
+            {files.map((file) => (
+              <div 
+                key={file.file_id} 
+                className="flex items-center justify-between p-3 rounded-lg border border-gray-200/20 hover:bg-gray-800/40 transition-colors"
+              >
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-gray-200 group-hover:text-white">
+                    {file.filename}
+                  </span>
+                  <span className="text-xs font-light text-gray-400">
+                    {file.status}
+                  </span>
+                </div>
+                <button
+                  onClick={() => handleFileDelete(file.file_id)}
+                  className="p-1 rounded-full hover:bg-gray-700/50"
+                >
+                  <TrashIcon />
+                </button>
               </div>
-              <span onClick={() => handleFileDelete(file.file_id)}>
-                <TrashIcon />
-              </span>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
-      <div className={styles.fileUploadContainer}>
-        <label htmlFor="file-upload" className={styles.fileUploadBtn}>
-          Attach files
+
+      <div className="mt-4">
+        <label 
+          htmlFor="file-upload" 
+          className="inline-flex items-center px-4 py-2 rounded-md border border-gray-200/20 
+                   text-sm font-medium text-gray-200 hover:bg-gray-800/40 hover:text-white
+                   cursor-pointer transition-colors"
+        >
+          <svg 
+            className="w-4 h-4 mr-2" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={2} 
+              d="M12 4v16m8-8H4" 
+            />
+          </svg>
+          <span className="font-medium">Attach files</span>
         </label>
         <input
           type="file"
           id="file-upload"
           name="file-upload"
-          className={styles.fileUploadInput}
+          className="sr-only"
           multiple
           onChange={handleFileUpload}
         />

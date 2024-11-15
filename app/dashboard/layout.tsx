@@ -17,10 +17,10 @@ export default async function DashboardLayout({
       <DashboardSidebar />
 
       <SidebarInset>
-        <main className='p-4'>
+        <section className='p-4 bg-black min-h-screen'>
           <SidebarTrigger />
           {children}
-        </main>
+        </section>
       </SidebarInset>
     </SidebarProvider>
   )

@@ -7,6 +7,7 @@ import Markdown from "react-markdown";
 // @ts-expect-error
 import { AssistantStreamEvent } from "openai/resources/beta/assistants/assistants";
 import { RequiredActionFunctionToolCall } from "openai/resources/beta/threads/runs/runs";
+import { Bot } from 'lucide-react';
 
 type MessageProps = {
   role: "user" | "assistant" | "code";
@@ -14,26 +15,41 @@ type MessageProps = {
 };
 
 const UserMessage = ({ text }: { text: string }) => {
-  return <div className={styles.userMessage}>{text}</div>;
+  return (
+    <div className="flex justify-end mb-4">
+      <div className="bg-blue-600/30 text-gray-200 rounded-2xl rounded-tr-none px-4 py-2 max-w-[80%]">
+        {text}
+      </div>
+    </div>
+  );
 };
 
 const AssistantMessage = ({ text }: { text: string }) => {
   return (
-    <div className={styles.assistantMessage}>
-      <Markdown>{text}</Markdown>
+    <div className="flex items-start mb-4 gap-2">
+      <div className="flex-shrink-0 bg-gray-700/50 rounded-lg p-1.5">
+        <Bot className="h-5 w-5 text-gray-300" />
+      </div>
+      <div className="bg-gray-800/50 text-gray-200 rounded-2xl rounded-tl-none px-4 py-2 max-w-[80%]">
+        <Markdown className="prose prose-invert prose-sm max-w-none">
+          {text}
+        </Markdown>
+      </div>
     </div>
   );
 };
 
 const CodeMessage = ({ text }: { text: string }) => {
   return (
-    <div className={styles.codeMessage}>
-      {text.split("\n").map((line, index) => (
-        <div key={index}>
-          <span>{`${index + 1}. `}</span>
-          {line}
-        </div>
-      ))}
+    <div className="flex items-start mb-4 gap-2 ml-9">
+      <div className="bg-gray-800/50 font-mono text-sm text-gray-200 rounded-xl px-4 py-2 max-w-[80%] overflow-x-auto">
+        {text.split("\n").map((line, index) => (
+          <div key={index} className="flex gap-2">
+            <span className="text-gray-500 select-none w-7 text-right">{index + 1}</span>
+            <span>{line}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
@@ -249,8 +265,8 @@ const Chat = ({
   }
 
   return (
-    <div className={styles.chatContainer}>
-      <div className={styles.messages}>
+    <div className="flex flex-col h-full">
+      <div className="flex-1 overflow-y-auto px-4 py-4">
         {messages.map((msg, index) => (
           <Message key={index} role={msg.role} text={msg.text} />
         ))}
@@ -258,22 +274,30 @@ const Chat = ({
       </div>
       <form
         onSubmit={handleSubmit}
-        className={`${styles.inputForm} ${styles.clearfix}`}
+        className="border-t border-gray-700/50 p-4 bg-gray-900/30"
       >
-        <input
-          type="text"
-          className={styles.input}
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          placeholder="Enter your question"
-        />
-        <button
-          type="submit"
-          className={styles.button}
-          disabled={inputDisabled}
-        >
-          Send
-        </button>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            placeholder="Type your message..."
+            disabled={inputDisabled}
+            className="flex-1 bg-gray-800/50 text-gray-200 rounded-lg px-4 py-2 
+                     placeholder-gray-400 focus:outline-none focus:ring-2 
+                     focus:ring-blue-500/50 border border-gray-700"
+          />
+          <button
+            type="submit"
+            disabled={inputDisabled}
+            className="bg-blue-600/30 text-gray-200 px-4 py-2 rounded-lg
+                     hover:bg-blue-600/40 transition-colors disabled:opacity-50
+                     disabled:cursor-not-allowed focus:outline-none focus:ring-2
+                     focus:ring-blue-500/50"
+          >
+            Send
+          </button>
+        </div>
       </form>
     </div>
   );

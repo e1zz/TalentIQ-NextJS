@@ -20,7 +20,8 @@ import {
   History,
   Search,
   Settings,
-  UserRoundCog
+  UserRoundCog,
+  Upload
 } from 'lucide-react'
 
 // Menu items.
@@ -40,6 +41,7 @@ const items = [
     url: '/dashboard/Assistant',
     icon: Bot
   },
+
   {
     title: 'Settings',
     url: '/dashboard/settings',
@@ -54,8 +56,11 @@ export default function DashboardSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href='/' className='text-sky-700 hover:text-sky-600'>
-                <ArrowLeft />
+              <Link 
+                href="/"
+                className='text-gray-200 hover:text-white transition-colors flex items-center gap-2'
+              >
+                <ArrowLeft className="h-4 w-4" />
                 <span>Back to site</span>
               </Link>
             </SidebarMenuButton>
