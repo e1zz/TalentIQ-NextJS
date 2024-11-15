@@ -15,6 +15,7 @@ import {
 
 import {
   ArrowLeft,
+  Bot,
   Flag,
   History,
   Search,
@@ -35,14 +36,9 @@ const items = [
     icon: Flag
   },
   {
-    title: 'History',
-    url: '/dashboard/history',
-    icon: History
-  },
-  {
-    title: 'Profile',
-    url: '/dashboard/profile',
-    icon: UserRoundCog
+    title: 'Assistant',
+    url: '/dashboard/Assistant',
+    icon: Bot
   },
   {
     title: 'Settings',
