@@ -4,73 +4,73 @@ import { ArrowRight, Search, Users, Briefcase, LineChart } from 'lucide-react';
 export default function Home() {
   return (
     <main className="min-h-screen">
-      {/* Hero Section */}
+      {/* Sección Hero */}
       <section className="py-20 px-4 bg-gradient-to-b from-gray-900 to-gray-800">
         <div className="container mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-            Find Your Perfect <span className="text-blue-400">Tech Talent</span>
+            Encuentra tu <span className="text-blue-400">Talento Tech</span> Ideal
           </h1>
           <p className="text-gray-300 text-xl md:text-2xl max-w-2xl mx-auto mb-12">
-            AI-powered platform to discover, evaluate, and connect with top tech professionals
+            Plataforma impulsada por IA para descubrir, evaluar y conectar con los mejores profesionales tecnológicos
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
               href="/Auth/signUp"
               className="inline-flex items-center px-6 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
             >
-              Get Started
+              Comenzar
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
             <Link 
               href="/about"
               className="inline-flex items-center px-6 py-3 rounded-lg border border-gray-600 text-gray-200 hover:bg-gray-800 transition-colors"
             >
-              Learn More
+              Saber Más
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Sección de Características */}
       <section className="py-20 px-4 bg-gray-900">
         <div className="container mx-auto">
           <h2 className="text-3xl font-bold text-center text-white mb-12">
-            Why Choose Our Platform
+            ¿Por Qué Elegir Nuestra Plataforma?
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             <FeatureCard 
               icon={<Search className="h-8 w-8 text-blue-400" />}
-              title="AI-Powered Search"
-              description="Advanced algorithms to match your requirements with the perfect candidates"
+              title="Búsqueda con IA"
+              description="Algoritmos avanzados para encontrar los candidatos perfectos según tus requisitos"
             />
             <FeatureCard 
               icon={<Users className="h-8 w-8 text-blue-400" />}
-              title="Verified Profiles"
-              description="Pre-screened candidates with validated skills and experience"
+              title="Perfiles Verificados"
+              description="Candidatos pre-evaluados con habilidades y experiencia validadas"
             />
             <FeatureCard 
               icon={<LineChart className="h-8 w-8 text-blue-400" />}
-              title="Market Insights"
-              description="Real-time data on salary trends and market availability"
+              title="Insights del Mercado"
+              description="Datos en tiempo real sobre tendencias salariales y disponibilidad"
             />
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Sección CTA */}
       <section className="py-20 px-4 bg-gray-800">
         <div className="container mx-auto text-center">
           <h2 className="text-3xl font-bold text-white mb-6">
-            Ready to Transform Your Hiring Process?
+            ¿Listo para Transformar tu Proceso de Contratación?
           </h2>
           <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-            Join hundreds of companies already finding their perfect tech talent through our platform.
+            Únete a cientos de empresas que ya encuentran su talento tech ideal a través de nuestra plataforma.
           </p>
           <Link 
             href="/signup"
             className="inline-flex items-center px-8 py-4 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors text-lg"
           >
-            Start Hiring Now
+            Comienza a Contratar
             <ArrowRight className="ml-2 h-5 w-5" />
           </Link>
         </div>
