@@ -12,7 +12,7 @@ export default function Home() {
           <img 
             src="https://picsum.photos/1920/1080" 
             alt="Authentication wallpaper"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover rounded-full"
           />
         </div>
       </section>
