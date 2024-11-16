@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import styles from "./warnings.module.css";
-import { assistantId } from "../assistant-config";
+import { assistantId } from "@/app/assistant-config";
 
 const Warnings = () => {
   const [loading, setLoading] = useState(false);

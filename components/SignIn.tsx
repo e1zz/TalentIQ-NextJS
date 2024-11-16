@@ -7,11 +7,14 @@ import Button from './Button';
 import { useRouter } from 'next/navigation';
 
 interface SignInProps {
-  onForgotPassword: () => void;
-  onSignUp: () => void;
+  onForgotPassword?: () => void;
+  onSignUp?: () => void;
 }
 
-const SignIn: React.FC<SignInProps> = ({ onForgotPassword, onSignUp }) => {
+const SignIn: React.FC<SignInProps> = ({ 
+  onForgotPassword = () => {}, 
+  onSignUp = () => {} 
+}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);

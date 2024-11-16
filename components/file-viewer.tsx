@@ -17,8 +17,14 @@ const TrashIcon = () => (
   </svg>
 );
 
+interface FileData {
+  file_id: string;
+  filename: string;
+  status: string;
+}
+
 const FileViewer = () => {
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState<FileData[]>([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -43,9 +49,9 @@ const FileViewer = () => {
     });
   };
 
-  const handleFileUpload = async (event: { target: { files: string | any[]; }; }) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const data = new FormData();
-    if (event.target.files.length < 0) return;
+    if (!event.target.files?.length) return;
     data.append("file", event.target.files[0]);
     await fetch("/api/assistants/files", {
       method: "POST",
