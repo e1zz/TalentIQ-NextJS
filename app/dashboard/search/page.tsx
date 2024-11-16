@@ -114,7 +114,7 @@ export default function CandidateSurvey() {
 
   if (showResults) {
     return (
-      <main className="min-h-screen bg-gray-900 p-6">
+      <main className="min-h-screen p-6">
         <div className="container mx-auto max-w-4xl">
           <h2 className="text-2xl font-bold text-white mb-6">
             Resultados de la búsqueda
