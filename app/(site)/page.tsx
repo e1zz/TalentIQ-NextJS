@@ -1,12 +1,154 @@
+'use client';  // Add this at the top since we're using framer-motion
+
 import Link from 'next/link';
-import { ArrowRight, Search, Users, Briefcase, LineChart } from 'lucide-react';
+import { ArrowRight, Search, Users, LineChart } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+interface FeatureCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}
+
+const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description }) => {
+  return (
+    <div className="p-6 rounded-lg bg-gray-800/50 border border-gray-700 hover:border-blue-500/50 transition-colors">
+      <div className="mb-4">
+        {icon}
+      </div>
+      <h3 className="text-xl font-semibold text-white mb-2">
+        {title}
+      </h3>
+      <p className="text-gray-300">
+        {description}
+      </p>
+    </div>
+  );
+};
+
+const FloatingParticle = ({ delay = 0, position = { x: 0, y: 0 } }) => (
+  <motion.div
+    className="absolute w-2 h-2 bg-blue-500/30 rounded-full"
+    style={{
+      top: `${position.y}%`,
+      left: `${position.x}%`,
+    }}
+    animate={{
+      y: [0, -100, 0],
+      x: [0, 50, 0],
+      opacity: [0, 1, 0],
+      scale: [0, 1.5, 0],
+    }}
+    transition={{
+      duration: 10,
+      repeat: Infinity,
+      delay: delay,
+      ease: "easeInOut",
+    }}
+  />
+);
+
+const particlePositions = Array.from({ length: 20 }, (_, i) => ({
+  x: (i * 5) % 100,
+  y: Math.floor(i / 5) * 20 % 100,
+}));
+
+const orbPositions = [
+  { x: 20, y: 30 },
+  { x: 50, y: 60 },
+  { x: 80, y: 40 },
+];
 
 export default function Home() {
   return (
     <main className="min-h-screen">
       {/* Sección Hero */}
-      <section className="py-20 px-4 bg-gradient-to-b from-gray-900 to-gray-800">
-        <div className="container mx-auto text-center">
+      <section className="relative py-20 px-4 overflow-hidden">
+        {/* Base Background */}
+        <div className="absolute inset-0 -z-10">
+          {/* Dark gradient base */}
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-900 to-gray-800" />
+          
+          {/* Grid Pattern */}
+          <div 
+            className="absolute inset-0 opacity-[0.15]"
+            style={{
+              backgroundImage: `
+                linear-gradient(to right, #304050 1px, transparent 1px),
+                linear-gradient(to bottom, #304050 1px, transparent 1px)
+              `,
+              backgroundSize: '50px 50px',
+            }}
+          />
+
+          {/* Animated gradient overlay */}
+          <motion.div
+            className="absolute inset-0 opacity-30"
+            style={{
+              background: 'linear-gradient(45deg, #0055ff, #0099ff, #00ccff)',
+              backgroundSize: '400% 400%',
+            }}
+            animate={{
+              backgroundPosition: ['0% 0%', '100% 100%'],
+            }}
+            transition={{
+              duration: 15,
+              repeat: Infinity,
+              repeatType: 'reverse',
+              ease: 'easeInOut',
+            }}
+          />
+
+          {/* Floating particles */}
+          {particlePositions.map((position, i) => (
+            <FloatingParticle 
+              key={i} 
+              delay={i * 0.5} 
+              position={position}
+            />
+          ))}
+
+          {/* Glowing orbs */}
+          <div className="absolute inset-0">
+            {orbPositions.map((position, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-96 h-96 rounded-full"
+                style={{
+                  background: `radial-gradient(circle, rgba(56,182,255,0.15) 0%, rgba(56,182,255,0) 70%)`,
+                  top: `${position.y}%`,
+                  left: `${position.x}%`,
+                  transform: 'translate(-50%, -50%)',
+                }}
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.3, 0.5, 0.3],
+                }}
+                transition={{
+                  duration: 8,
+                  repeat: Infinity,
+                  delay: i * 2,
+                  ease: "easeInOut",
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Scanlines effect */}
+          <div 
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              backgroundImage: 'linear-gradient(0deg, rgba(255,255,255,0.03) 50%, transparent 50%)',
+              backgroundSize: '4px 4px',
+              mixBlendMode: 'overlay',
+            }}
+          />
+
+          {/* Subtle blur overlay */}
+          <div className="absolute inset-0 backdrop-blur-[80px]" />
+        </div>
+
+        <div className="container mx-auto text-center relative">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
             Encuentra tu <span className="text-blue-400">Talento Tech</span> Ideal
           </h1>
@@ -76,25 +218,5 @@ export default function Home() {
         </div>
       </section>
     </main>
-  );
-}
-
-function FeatureCard({ icon, title, description }: { 
-  icon: React.ReactNode; 
-  title: string; 
-  description: string; 
-}) {
-  return (
-    <div className="p-6 rounded-lg bg-gray-800/50 border border-gray-700 hover:border-blue-500/50 transition-colors">
-      <div className="mb-4">
-        {icon}
-      </div>
-      <h3 className="text-xl font-semibold text-white mb-2">
-        {title}
-      </h3>
-      <p className="text-gray-300">
-        {description}
-      </p>
-    </div>
   );
 }
