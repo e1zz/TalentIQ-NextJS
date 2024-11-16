@@ -1,35 +1,29 @@
 import { assistantId } from "@/app/assistant-config";
 import { openai } from "@/app/openai";
-import { NextRequest } from "next/server";
+import { NextRequest } from 'next/server';
 
-export const config = {
-  api: {
-    silent: true
-  }
-}
+
 
 // upload file to assistant's vector store
 export async function POST(request: NextRequest) {
-  const formData = await request.formData(); // process file as FormData
-  const file = formData.get("file"); // retrieve the single file from FormData
-  const vectorStoreId = await getOrCreateVectorStore(); // get or create vector store
+  const formData = await request.formData();
+  const file = formData.get("file");
+  const vectorStoreId = await getOrCreateVectorStore();
 
-  // upload using the file stream
   const openaiFile = await openai.files.create({
     file: file as File,
     purpose: "assistants",
   });
 
-  // add file to vector store
   await openai.beta.vectorStores.files.create(vectorStoreId, {
     file_id: openaiFile.id,
   });
-  return new Response();
+  return Response.json({ success: true });
 }
 
 // list files in assistant's vector store
 export async function GET() {
-  const vectorStoreId = await getOrCreateVectorStore(); // get or create vector store
+  const vectorStoreId = await getOrCreateVectorStore();
   const fileList = await openai.beta.vectorStores.files.list(vectorStoreId);
 
   const filesArray = await Promise.all(
@@ -54,12 +48,11 @@ export async function DELETE(request: NextRequest) {
   const body = await request.json();
   const fileId = body.fileId;
 
-  const vectorStoreId = await getOrCreateVectorStore(); // get or create vector store
-  await openai.beta.vectorStores.files.del(vectorStoreId, fileId); // delete file from vector store
+  const vectorStoreId = await getOrCreateVectorStore();
+  await openai.beta.vectorStores.files.del(vectorStoreId, fileId);
 
-  return new Response();
+  return Response.json({ success: true });
 }
-
 /* Helper functions */
 
 const getOrCreateVectorStore = async () => {
