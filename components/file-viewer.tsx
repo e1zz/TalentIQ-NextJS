@@ -27,9 +27,13 @@ const FileViewer = () => {
   const [files, setFiles] = useState<FileData[]>([]);
 
   useEffect(() => {
+    // Initial fetch
+    fetchFiles();
+    
+    // Poll every 5 seconds instead of every second
     const interval = setInterval(() => {
       fetchFiles();
-    }, 1000);
+    }, 5000); // Changed from 1000 to 5000
 
     return () => clearInterval(interval);
   }, []);

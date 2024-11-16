@@ -36,6 +36,38 @@ export default function PdfFileList() {
     fetchPdfFiles();
   }, []);
 
+  const handleDownload = async (file: FileObject) => {
+    try {
+      const { data, error } = await supabase
+        .storage
+        .from('candidates')
+        .createSignedUrl(file.name, 60); // URL valid for 60 seconds
+
+      if (error) throw error;
+      
+      // Open the signed URL in a new tab
+      window.open(data.signedUrl, '_blank');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to download file');
+    }
+  };
+
+  const handleDelete = async (file: FileObject) => {
+    try {
+      const { error } = await supabase
+        .storage
+        .from('candidates')
+        .remove([file.name]);
+
+      if (error) throw error;
+      
+      // Update the files list after successful deletion
+      setFiles(files.filter(f => f.id !== file.id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete file');
+    }
+  };
+
   if (isLoading) {
     return <div className="text-gray-400">Loading PDF files...</div>;
   }
@@ -58,9 +90,23 @@ export default function PdfFileList() {
             >
               <div className="flex items-center justify-between">
                 <span className="text-gray-200">{file.name}</span>
-                <span className="text-sm text-gray-400">
-                  {(file.metadata?.size / 1024 / 1024).toFixed(2)} MB
-                </span>
+                <div className="flex items-center gap-4">
+                  <span className="text-sm text-gray-400">
+                    {(file.metadata?.size / 1024 / 1024).toFixed(2)} MB
+                  </span>
+                  <button
+                    onClick={() => handleDownload(file)}
+                    className="px-3 py-1 text-sm text-gray-200 bg-[#3f3f3f] rounded hover:bg-[#4f4f4f] transition-colors"
+                  >
+                    Download
+                  </button>
+                  <button
+                    onClick={() => handleDelete(file)}
+                    className="px-3 py-1 text-sm text-white bg-red-600 rounded hover:bg-red-700 transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </li>
           ))}

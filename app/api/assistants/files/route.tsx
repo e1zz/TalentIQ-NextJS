@@ -2,6 +2,12 @@ import { assistantId } from "@/app/assistant-config";
 import { openai } from "@/app/openai";
 import { NextRequest } from "next/server";
 
+export const config = {
+  api: {
+    silent: true
+  }
+}
+
 // upload file to assistant's vector store
 export async function POST(request: NextRequest) {
   const formData = await request.formData(); // process file as FormData
