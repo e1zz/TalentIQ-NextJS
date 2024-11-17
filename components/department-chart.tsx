@@ -51,12 +51,16 @@ const options = {
 export function DepartmentChart() {
   return (
     <Card className="bg-[#272727] border-0">
-      <CardHeader>
-        <CardTitle className="text-[40px] font-bold text-white">Department Activities</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="h-[300px] w-[300px] mx-auto">
-          <Doughnut data={data} options={options} />
+      <CardContent className="flex items-center justify-center p-6">
+        <div className="relative w-full max-w-[300px] aspect-square mx-auto">
+          <Doughnut 
+            data={data} 
+            options={{
+              ...options,
+              responsive: true,
+              maintainAspectRatio: true
+            }} 
+          />
         </div>
       </CardContent>
     </Card>

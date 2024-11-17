@@ -1,7 +1,7 @@
 'use client';  // Add this at the top since we're using framer-motion
 
 import Link from 'next/link';
-import { ArrowRight, Search, Users, LineChart } from 'lucide-react';
+import { ArrowRight, Search, Users, LineChart, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface FeatureCardProps {
@@ -12,17 +12,20 @@ interface FeatureCardProps {
 
 const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description }) => {
   return (
-    <div className="p-6 rounded-lg bg-gray-800/50 border border-gray-700 hover:border-blue-500/50 transition-colors">
-      <div className="mb-4">
+    <motion.div
+      whileHover={{ scale: 1.05 }}
+      className="p-8 rounded-xl bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700 hover:border-blue-500/50 transition-all shadow-lg"
+    >
+      <div className="mb-4 text-blue-400 transform transition-transform group-hover:scale-110">
         {icon}
       </div>
-      <h3 className="text-xl font-semibold text-white mb-2">
+      <h3 className="text-2xl font-bold text-white mb-3">
         {title}
       </h3>
-      <p className="text-gray-300">
+      <p className="text-gray-300 leading-relaxed">
         {description}
       </p>
-    </div>
+    </motion.div>
   );
 };
 
@@ -59,11 +62,36 @@ const orbPositions = [
   { x: 80, y: 40 },
 ];
 
+const StatsSection = () => (
+  <section className="py-20 px-4 bg-gradient-to-b from-gray-900 to-gray-800">
+    <div className="container mx-auto">
+      <div className="grid md:grid-cols-3 gap-8 text-center">
+        {[
+          { number: "500+", label: "Empresas Activas" },
+          { number: "10,000+", label: "Talentos Verificados" },
+          { number: "95%", label: "Tasa de Éxito" },
+        ].map((stat, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.2 }}
+            className="p-6"
+          >
+            <div className="text-4xl font-bold text-blue-400 mb-2">{stat.number}</div>
+            <div className="text-gray-300">{stat.label}</div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
 export default function Home() {
   return (
     <main className="min-h-screen">
-      {/* Sección Hero */}
-      <section className="relative py-20 px-4 overflow-hidden">
+      {/* Hero Section - Updated */}
+      <section className="relative py-32 px-4 overflow-hidden">
         {/* Base Background */}
         <div className="absolute inset-0 -z-10">
           {/* Dark gradient base */}
@@ -149,27 +177,38 @@ export default function Home() {
         </div>
 
         <div className="container mx-auto text-center relative">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-            Encuentra tu <span className="text-blue-400">Talento</span> Ideal
-          </h1>
-          <p className="text-gray-300 text-xl md:text-2xl max-w-2xl mx-auto mb-12">
-            Plataforma impulsada por IA para descubrir, evaluar y conectar con los mejores profesionales
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link 
-              href="/Auth/signIn"
-              className="inline-flex items-center px-6 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-            >
-              Comenzar
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-            <Link 
-              href="/about"
-              className="inline-flex items-center px-6 py-3 rounded-lg border border-gray-600 text-gray-200 hover:bg-gray-800 transition-colors"
-            >
-              Saber Más
-            </Link>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+              Encuentra tu <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Talento</span> Ideal
+            </h1>
+            <p className="text-gray-300 text-xl md:text-2xl max-w-3xl mx-auto mb-12 leading-relaxed">
+              Plataforma impulsada por IA para descubrir, evaluar y conectar con los mejores profesionales
+            </p>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <motion.div whileHover={{ scale: 1.05 }}>
+                <Link 
+                  href="/Auth/signIn"
+                  className="inline-flex items-center px-8 py-4 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:from-blue-700 hover:to-blue-600 transition-all text-lg font-semibold shadow-lg"
+                >
+                  Comienza a Contratar
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.05 }}>
+                <Link 
+                  href="/about"
+                  className="inline-flex items-center px-8 py-4 rounded-lg border-2 border-gray-600/50 text-gray-200 hover:bg-gray-800/50 hover:border-blue-500/50 hover:text-blue-400 transition-all text-lg font-semibold group"
+                >
+                  Saber Más
+                  <ArrowRight className="ml-2 h-5 w-5 transform group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </motion.div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
@@ -209,7 +248,7 @@ export default function Home() {
             Únete a cientos de empresas que ya encuentran su talento tech ideal a través de nuestra plataforma.
           </p>
           <Link 
-            href="/signup"
+            href="/Auth/signIn"
             className="inline-flex items-center px-8 py-4 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors text-lg"
           >
             Comienza a Contratar
@@ -217,6 +256,9 @@ export default function Home() {
           </Link>
         </div>
       </section>
+
+      {/* Insert Stats Section */}
+      <StatsSection />
     </main>
   );
 }

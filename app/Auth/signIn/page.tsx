@@ -7,11 +7,19 @@ export default function Home() {
       <section className='relative min-h-screen flex items-center justify-center'>
         {/* Blurred background */}
         <div className="absolute inset-0 z-0">
-          <img 
-            src="https://picsum.photos/1920/1080" 
-            alt="Authentication wallpaper"
-            className="w-full h-full object-cover blur-sm brightness-50"
-          />
+          <div 
+            className="h-full w-full bg-auth-wallpaper bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: 'url("/images/auth-wallpaper.jpg")',
+              imageRendering: 'crisp-edges'
+            }}
+          >
+            <img 
+              src="https://picsum.photos/1920/1080" 
+              alt="Authentication wallpaper"
+              className="w-full h-full object-cover blur-sm brightness-50"
+            />
+          </div>
         </div>
         
         {/* Sign in container */}
