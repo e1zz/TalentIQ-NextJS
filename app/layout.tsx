@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import Providers from '@/components/providers'
 import { Playfair_Display } from 'next/font/google'
+import { HotjarProvider } from '@/components/HotjarProvider'
 
 import './globals.css'
 import { SpeedInsights } from '@vercel/speed-insights/next'
@@ -42,8 +43,10 @@ export default function RootLayout({
           playfair.variable
         )}
       >
-        <Providers>{children}</Providers>
-        <SpeedInsights />
+        <HotjarProvider>
+          <Providers>{children}</Providers>
+          <SpeedInsights />
+        </HotjarProvider>
       </body>
     </html>
   )
