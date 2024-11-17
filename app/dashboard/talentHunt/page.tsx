@@ -158,7 +158,7 @@ export default function CandidateSurvey() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
+    <main className="min-h-screen flex items-center justify-center p-6">
       <div className="w-full max-w-2xl">
         {/* Progress bar */}
         <div className="mb-8">

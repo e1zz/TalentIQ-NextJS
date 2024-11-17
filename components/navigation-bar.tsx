@@ -83,7 +83,7 @@ function UnauthorizedNavbar() {
             <Link href="/Auth/signIn" className="text-lg font-medium hover:underline underline-offset-4">
               Iniciar Sesión
             </Link>
-            <Link href="/Auth/signUp" className="text-lg font-medium hover:underline underline-offset-4">
+            <Link href="/Auth/signIn" className="text-lg font-medium hover:underline underline-offset-4">
               Registrarse
             </Link>
           </nav>
