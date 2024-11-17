@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import Providers from '@/components/providers'
 import { Playfair_Display } from 'next/font/google'
+import Mouseflow from './components/Mouseflow'
 
 import './globals.css'
 
@@ -42,6 +43,7 @@ export default function RootLayout({
         )}
       >
         <Providers>{children}</Providers>
+        <Mouseflow />
       </body>
     </html>
   )
