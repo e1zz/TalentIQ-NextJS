@@ -6,6 +6,7 @@ import { Playfair_Display } from 'next/font/google'
 import Mouseflow from './components/Mouseflow'
 
 import './globals.css'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -43,7 +44,7 @@ export default function RootLayout({
         )}
       >
         <Providers>{children}</Providers>
-        <Mouseflow />
+        <SpeedInsights />
       </body>
     </html>
   )
