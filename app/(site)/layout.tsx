@@ -2,6 +2,11 @@ import Footer from '@/components/footer'
 import Header from '@/components/header'
 import { Navbar } from '@/components/navigation-bar'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'TalentIQ',
+}
 
 export default function SiteLayout({
   children
