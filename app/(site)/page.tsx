@@ -153,7 +153,7 @@ export default function Home() {
             Encuentra tu <span className="text-blue-400">Talento Tech</span> Ideal
           </h1>
           <p className="text-gray-300 text-xl md:text-2xl max-w-2xl mx-auto mb-12">
-            Plataforma impulsada por IA para descubrir, evaluar y conectar con los mejores profesionales tecnológicos
+            Plataforma impulsada por IA para descubrir, evaluar y conectar con los mejores profesionales
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 

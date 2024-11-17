@@ -26,19 +26,18 @@ export async function GET() {
   const vectorStoreId = await getOrCreateVectorStore();
   const fileList = await openai.beta.vectorStores.files.list(vectorStoreId);
 
+  // Fetch file details concurrently
   const filesArray = await Promise.all(
-    fileList.data.map(async (file) => {
-      const fileDetails = await openai.files.retrieve(file.id);
-      const vectorFileDetails = await openai.beta.vectorStores.files.retrieve(
-        vectorStoreId,
-        file.id
-      );
-      return {
+    fileList.data.map((file) => 
+      Promise.all([
+        openai.files.retrieve(file.id),
+        openai.beta.vectorStores.files.retrieve(vectorStoreId, file.id)
+      ]).then(([fileDetails, vectorFileDetails]) => ({
         file_id: file.id,
         filename: fileDetails.filename,
         status: vectorFileDetails.status,
-      };
-    })
+      }))
+    )
   );
   return Response.json(filesArray);
 }

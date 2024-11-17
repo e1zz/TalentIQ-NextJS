@@ -97,15 +97,15 @@ const SignIn: React.FC<SignInProps> = ({ onForgotPassword }) => {
   };
 
   return (
-    <main className="flex overflow-hidden gap-5 justify-center items-center px-28 py-64 h-full text-xs max-md:px-5 max-md:py-24">
+    <main className="flex min-h-screen w-full items-center justify-center px-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative"
+        className="w-full max-w-[365px]"
       >
         <form 
           onSubmit={isSignUp ? handleSignUp : handleSignIn} 
-          className="flex overflow-hidden gap-3.5 relative flex-col justify-center items-center self-stretch px-10 py-16 my-auto rounded-2xl border border-cyan-200 border-solid backdrop-blur-2xl min-w-[240px] w-[365px]"
+          className="flex overflow-hidden gap-3.5 relative flex-col items-center justify-center px-6 sm:px-10 py-12 sm:py-16 rounded-2xl border border-cyan-200 border-solid backdrop-blur-2xl w-full"
         >
           <img loading="lazy" src="https://quragxfempstkztmzwtk.supabase.co/storage/v1/object/sign/Images/Frame%202.svg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJJbWFnZXMvRnJhbWUgMi5zdmciLCJpYXQiOjE3MzE2NDAxOTYsImV4cCI6MTc2MzE3NjE5Nn0.8cVBojfcbHfMWEMoK-bkStHuOaAPwpE6kmm4m8TsrZQ&t=2024-11-15T03%3A09%3A56.437Z" className="object-cover absolute inset-0 size-full" alt="" />
           
@@ -113,7 +113,7 @@ const SignIn: React.FC<SignInProps> = ({ onForgotPassword }) => {
             key={isSignUp ? 'signup' : 'signin'}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="z-0 text-4xl font-bold text-center text-white"
+            className="z-0 text-3xl sm:text-4xl font-bold text-center text-white"
           >
             {isSignUp ? 'Registrarse' : 'Iniciar Sesión'}
           </motion.h1>
@@ -130,32 +130,37 @@ const SignIn: React.FC<SignInProps> = ({ onForgotPassword }) => {
               initial={{ opacity: 0, x: isSignUp ? 100 : -100 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: isSignUp ? -100 : 100 }}
-              className="flex flex-col gap-3.5 w-full"
+              className="flex flex-col items-center gap-3.5 w-full"
             >
-              <InputField
-                type="email"
-                placeholder="usuario123@talentiq.com"
-                aria-label="Correo electrónico"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <InputField
-                type="password"
-                placeholder="******************"
-                aria-label="Contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              
-              {isSignUp && (
+              <div className="w-full space-y-3.5">
+                <InputField
+                  type="email"
+                  placeholder="usuario123@talentiq.com"
+                  aria-label="Correo electrónico"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full"
+                />
                 <InputField
                   type="password"
-                  placeholder="Confirmar Contraseña"
-                  aria-label="Confirmar Contraseña"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="******************"
+                  aria-label="Contraseña"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full"
                 />
-              )}
+                
+                {isSignUp && (
+                  <InputField
+                    type="password"
+                    placeholder="Confirmar Contraseña"
+                    aria-label="Confirmar Contraseña"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full"
+                  />
+                )}
+              </div>
             </motion.div>
           </AnimatePresence>
 
@@ -164,12 +169,12 @@ const SignIn: React.FC<SignInProps> = ({ onForgotPassword }) => {
               <button
                 type="button"
                 onClick={handleForgotPassword}
-                className="z-0 mt-4 text-sky-500 hover:text-sky-400 transition-colors font-medium"
+                className="z-0 mt-4 text-sky-500 hover:text-sky-400 transition-colors font-medium self-start"
               >
                 ¿Olvidaste tu contraseña?
               </button>
               
-              <label className="z-0 mt-4 flex items-center gap-2 text-neutral-400 cursor-pointer hover:text-neutral-300 transition-colors font-medium">
+              <label className="z-0 mt-4 mb-4 flex items-center gap-3 text-neutral-400 cursor-pointer hover:text-neutral-300 transition-colors font-medium self-start">
                 <div className="relative inline-flex items-center">
                   <input 
                     type="checkbox" 
@@ -177,9 +182,11 @@ const SignIn: React.FC<SignInProps> = ({ onForgotPassword }) => {
                     onChange={(e) => setRememberMe(e.target.checked)}
                     className="sr-only" 
                   />
-                  <div className={`w-4 h-4 border rounded ${rememberMe ? 'bg-sky-500 border-sky-500' : 'border-neutral-400'} transition-colors`}>
+                  <div className={`w-6 h-6 sm:w-5 sm:h-5 border-2 rounded-md ${
+                    rememberMe ? 'bg-sky-500 border-sky-500' : 'border-neutral-400'
+                  } transition-colors`}>
                     {rememberMe && (
-                      <Check className="w-4 h-4 text-white" strokeWidth={3} />
+                      <Check className="w-6 h-6 sm:w-5 sm:h-5 text-white" strokeWidth={2.5} />
                     )}
                   </div>
                 </div>
@@ -216,4 +223,4 @@ const SignIn: React.FC<SignInProps> = ({ onForgotPassword }) => {
   );
 };
 
-export default SignIn;
+export default SignIn;  

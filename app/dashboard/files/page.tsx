@@ -8,7 +8,7 @@ import toast from 'react-hot-toast'
 
 export default function SearchPage() {
   return (
-    <div className='min-h-screen p-6 bg-black'>
+    <div className='min-h-screen p-6'>
       {/* Search Header */}
       <div className='mb-6 space-y-4'>
         <div className='flex flex-col gap-4 md:flex-row'>
