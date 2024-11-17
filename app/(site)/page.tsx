@@ -150,14 +150,14 @@ export default function Home() {
 
         <div className="container mx-auto text-center relative">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-            Encuentra tu <span className="text-blue-400">Talento Tech</span> Ideal
+            Encuentra tu <span className="text-blue-400">Talento</span> Ideal
           </h1>
           <p className="text-gray-300 text-xl md:text-2xl max-w-2xl mx-auto mb-12">
             Plataforma impulsada por IA para descubrir, evaluar y conectar con los mejores profesionales
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
-              href="/Auth/signUp"
+              href="/Auth/signIn"
               className="inline-flex items-center px-6 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
             >
               Comenzar
