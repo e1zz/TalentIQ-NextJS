@@ -68,8 +68,8 @@ const SignIn: React.FC<SignInProps> = ({ onForgotPassword }) => {
 
       if (error) throw error;
 
-      toast.success('¡Revisa tu correo para confirmar tu cuenta!');
-      router.push('/Auth/signIn');
+      toast.success('¡Cuenta creada correctamente!');
+      router.push('/dashboard');
     } catch (error: any) {
       toast.error(error.message);
     } finally {

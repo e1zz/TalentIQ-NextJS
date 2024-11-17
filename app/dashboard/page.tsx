@@ -21,11 +21,11 @@ export default function DashboardPage() {
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="analytics" disabled className="relative">
             Analytics
-            <span className="absolute -top-3 -right-3 bg-muted text-muted-foreground rounded-md px-1.5 py-0.5 text-xs">Soon</span>
+            <span className="absolute -top-3 -right-3 bg-white text-black rounded-md px-1.5 py-0.5 text-xs">Soon</span>
           </TabsTrigger>
           <TabsTrigger value="reports" disabled className="relative">
             Reports
-            <span className="absolute -top-3 -right-3 bg-muted text-muted-foreground rounded-md px-1.5 py-0.5 text-xs">Soon</span>
+            <span className="absolute -top-3 -right-3 bg-white text-black rounded-md px-1.5 py-0.5 text-xs">Soon</span>
           </TabsTrigger>
         </TabsList>
         <TabsContent value="overview" className="space-y-4">
