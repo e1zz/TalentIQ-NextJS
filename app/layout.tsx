@@ -3,7 +3,6 @@ import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import Providers from '@/components/providers'
 import { Playfair_Display } from 'next/font/google'
-import Mouseflow from './components/Mouseflow'
 
 import './globals.css'
 import { SpeedInsights } from '@vercel/speed-insights/next'
