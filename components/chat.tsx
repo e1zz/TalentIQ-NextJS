@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { RiRobot2Fill } from "react-icons/ri";
+import { pdf } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 
 interface MessageContent {
   type: 'text';
@@ -16,6 +18,22 @@ interface Message {
   content: MessageContent[];
 }
 
+const pdfStyles = StyleSheet.create({
+  page: {
+    padding: 40,
+  },
+  message: {
+    marginBottom: 10,
+    padding: 10,
+  },
+  userMessage: {
+    backgroundColor: '#E6E6FA',
+  },
+  assistantMessage: {
+    backgroundColor: '#F0F8FF',
+  },
+});
+
 export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -27,10 +45,10 @@ export default function Chat() {
     }
     return content.map((item, index) => {
       if (item.type === 'text') {
-        return <div key={index}>{item.text.value}</div>;
+        return item.text.value;
       }
-      return null;
-    });
+      return '';
+    }).join(' ');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -67,9 +85,61 @@ export default function Chat() {
     }
   };
 
+  const downloadPDF = async () => {
+    const MyDocument = () => (
+      <Document>
+        <Page size="A4" style={pdfStyles.page}>
+          {messages.map((message, index) => (
+            <View
+              key={index}
+              style={[
+                pdfStyles.message,
+                message.role === 'user'
+                  ? pdfStyles.userMessage
+                  : pdfStyles.assistantMessage,
+              ]}
+            >
+              <Text>
+                {`${message.role.toUpperCase()}: ${renderMessageContent(message.content)}`}
+              </Text>
+            </View>
+          ))}
+        </Page>
+      </Document>
+    );
+
+    const blob = await pdf(<MyDocument />).toBlob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'chat-history.pdf';
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <div className="space-y-4 mb-4">
+    <div className="max-w-2xl mx-auto p-4 h-screen flex flex-col">
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={downloadPDF}
+          className="px-4 py-2 bg-green-500 text-white rounded"
+        >
+          Download Chat
+        </button>
+      </div>
+      
+      <div className="space-y-4 mb-4 overflow-y-auto flex-1 
+        scrollbar-thin 
+        scrollbar-thumb-blue-500 
+        scrollbar-track-gray-200 
+        hover:scrollbar-thumb-blue-700
+        dark:scrollbar-thumb-blue-600 
+        dark:scrollbar-track-gray-800
+        dark:hover:scrollbar-thumb-blue-400
+        scrollbar-thumb-rounded-full
+        scrollbar-track-rounded-full
+        pr-2"
+      >
         {messages.map((message, index) => (
           <div key={index} className={`flex items-start gap-2 ${
             message.role === 'user' ? 'justify-end' : 'justify-start'

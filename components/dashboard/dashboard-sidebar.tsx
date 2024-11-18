@@ -84,7 +84,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ collapsed, setColla
           z-50
           transition-all
           duration-300
-          ${collapsed ? 'left-20' : 'left-64'}
+          ${collapsed ? 'left-20' : 'left-[250px]'}
         `}
       >
         <button
