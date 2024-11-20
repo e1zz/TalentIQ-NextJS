@@ -1,14 +1,25 @@
-import { openai } from "@/app/openai";
+import OpenAI from 'openai';
+import { NextResponse } from 'next/server';
 
-// download file by file ID
-export async function GET(_request: any, { params: { fileId } }: any) {
-  const [file, fileContent] = await Promise.all([
-    openai.files.retrieve(fileId),
-    openai.files.content(fileId),
-  ]);
-  return new Response(fileContent.body, {
-    headers: {
-      "Content-Disposition": `attachment; filename="${file.filename}"`,
-    },
-  });
+export const runtime = 'edge';
+export const maxDuration = 300;
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+export async function GET() {
+  try {
+    const files = await openai.files.list({
+      purpose: 'assistants'
+    });
+
+    return NextResponse.json(files.data);
+  } catch (error) {
+    console.error('Error fetching files:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch files. Please try again.' },
+      { status: 500 }
+    );
+  }
 }

@@ -5,6 +5,9 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+export const runtime = 'edge'
+export const maxDuration = 300
+
 export async function POST(req: Request) {
   try {
     const { message, threadId } = await req.json();
