@@ -60,7 +60,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ collapsed, setColla
           top-4 
           left-4 
           z-50 
-          p-2 
+          p-2.5
           bg-gray-800 
           rounded-md 
           md:hidden
@@ -68,9 +68,10 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ collapsed, setColla
           transition-colors
         "
         onClick={() => setCollapsed(!collapsed)}
-        aria-label="Toggle Menu"
+        aria-label={collapsed ? 'Open menu' : 'Close menu'}
+        aria-expanded={!collapsed}
       >
-        <MenuIcon className="h-6 w-6 text-gray-200" />
+        <MenuIcon className="h-6 w-6 text-gray-200" aria-hidden="true" />
       </button>
 
       {/* Chevron Trigger for MD and up (both portrait and landscape) */}
@@ -99,14 +100,21 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ collapsed, setColla
             transition-colors
             rounded-r-md
             cursor-pointer
+            relative
+            after:absolute
+            after:inset-y-0
+            after:left-0
+            after:w-11
+            after:content-['']
           "
           onClick={() => setCollapsed(!collapsed)}
-          aria-label={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-expanded={!collapsed}
         >
           {collapsed ? (
-            <ChevronRightIcon className="h-4 w-4 text-gray-200" />
+            <ChevronRightIcon className="h-4 w-4 text-gray-200" aria-hidden="true" />
           ) : (
-            <ChevronLeftIcon className="h-4 w-4 text-gray-200" />
+            <ChevronLeftIcon className="h-4 w-4 text-gray-200" aria-hidden="true" />
           )}
         </button>
       </div>
@@ -127,18 +135,21 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ collapsed, setColla
         rootStyles={{
           color: '#9ca3af',
         }}
+        lang="en"
       >
         {/* Back to Dashboard Link */}
         <div className="p-4 border-b border-gray-800 flex justify-center">
-          <Link 
+          <Link
             href="/dashboard"
-            className="text-gray-200 hover:text-white transition-colors"
+            aria-label="Home"
+            title="Home"
+            className="flex h-11 w-11 items-center justify-center rounded-md text-gray-200 hover:text-white transition-colors"
           >
-            <Home className="h-6 w-6" />
+            <Home className="h-6 w-6" aria-hidden="true" />
           </Link>
         </div>
 
-        <div className="pt-5">
+        <nav className="pt-5" aria-label="Main">
           <Menu
             menuItemStyles={{
               button: ({ level, active }) => ({
@@ -165,9 +176,9 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ collapsed, setColla
               <MenuItem
                 active={pathname === '/dashboard'}
                 icon={<LayoutDashboard size={20} />}
-                component={<Link href="/dashboard" />}
+                component={<Link href="/dashboard" title="Dashboard" />}
               >
-                {!collapsed && 'Dashboard'}
+                {collapsed ? <span className='sr-only'>Dashboard</span> : 'Dashboard'}
               </MenuItem>
             </div>
 
@@ -175,9 +186,9 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ collapsed, setColla
               <MenuItem
                 active={pathname === '/dashboard/talentHunt'}
                 icon={<UserSearch size={20} />}
-                component={<Link href="/dashboard/talentHunt" />}
+                component={<Link href="/dashboard/talentHunt" title="Talent Hunt" />}
               >
-                {!collapsed && 'Talent Hunt'}
+                {collapsed ? <span className='sr-only'>Talent Hunt</span> : 'Talent Hunt'}
               </MenuItem>
             </div>
 
@@ -185,10 +196,10 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ collapsed, setColla
               <MenuItem
                 active={pathname === '/dashboard/jobs'}
                 icon={<Briefcase size={20} className="opacity-50" />}
-                component={<Link href="/dashboard/jobs" />}
+                component={<Link href="/dashboard/jobs" title="Jobs" />}
                 disabled={true}
               >
-                {!collapsed && <span className="opacity-50">Jobs</span>}
+                {collapsed ? <span className="sr-only">Jobs</span> : <span className="opacity-50">Jobs</span>}
               </MenuItem>
             </div>
 
@@ -196,9 +207,9 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ collapsed, setColla
               <MenuItem
                 active={pathname === '/dashboard/Assistant'}
                 icon={<Bot size={20} />}
-                component={<Link href="/dashboard/Assistant" />}
+                component={<Link href="/dashboard/Assistant" title="Assistant" />}
               >
-                {!collapsed && 'Assistant'}
+                {collapsed ? <span className='sr-only'>Assistant</span> : 'Assistant'}
               </MenuItem>
             </div>
 
@@ -206,13 +217,13 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ collapsed, setColla
               <MenuItem
                 active={pathname === '/dashboard/files'}
                 icon={<Files size={20} />}
-                component={<Link href="/dashboard/files" />}
+                component={<Link href="/dashboard/files" title="Files" />}
               >
-                {!collapsed && 'Files'}
+                {collapsed ? <span className='sr-only'>Files</span> : 'Files'}
               </MenuItem>
             </div>
           </Menu>
-        </div>
+        </nav>
 
         <div className="mt-auto border-t border-gray-800">
           <Menu
@@ -240,7 +251,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ collapsed, setColla
                 icon={<LogOut size={20} />}
                 onClick={handleLogout}
               >
-                {!collapsed && 'Logout'}
+                {collapsed ? <span className='sr-only'>Logout</span> : 'Logout'}
               </MenuItem>
             </div>
           </Menu>
@@ -249,7 +260,8 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ collapsed, setColla
 
       {/* Backdrop */}
       {!collapsed && (
-        <div 
+        <div
+          aria-hidden="true"
           className="fixed inset-0 bg-black/50 z-30 lg:hidden portrait:block landscape:hidden max-h-[768px]:landscape:block"
           onClick={() => setCollapsed(true)}
         />

@@ -109,11 +109,11 @@ export default function PdfFileList() {
   };
 
   if (isLoading) {
-    return <div className="text-gray-400">Loading PDF files...</div>;
+    return <div className="text-gray-400" role="status">Loading PDF files...</div>;
   }
 
   if (error) {
-    return <div className="text-red-400">Error: {error}</div>;
+    return <div className="text-red-400" role="alert">Error: {error}</div>;
   }
 
   return (
@@ -146,7 +146,7 @@ export default function PdfFileList() {
                       title="Download file"
                       aria-label="Download file"
                     >
-                      <Download className="h-4 w-4" />
+                      <Download className="h-4 w-4" aria-hidden="true" />
                     </button>
                     <button
                       onClick={() => handleDelete(file)}
@@ -154,7 +154,7 @@ export default function PdfFileList() {
                       title="Delete file"
                       aria-label="Delete file"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-4 w-4" aria-hidden="true" />
                     </button>
                   </div>
                 </div>

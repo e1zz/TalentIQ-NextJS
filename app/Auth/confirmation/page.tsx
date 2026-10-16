@@ -42,10 +42,10 @@ function ConfirmationContent() {
   }, [searchParams, router, supabase])
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center" lang="en">
       <div className="bg-white p-8 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-4">Email Confirmation</h1>
-        <p>{message}</p>
+        <p role="status">{message}</p>
       </div>
     </div>
   )

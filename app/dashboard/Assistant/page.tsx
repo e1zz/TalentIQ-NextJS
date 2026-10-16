@@ -3,7 +3,7 @@ import FileViewer from "@/components/file-viewer";
 
 export default function HistoryPage() {
   return (
-    <section className='container mx-auto min-h-[calc(100vh-5rem)] flex flex-col px-4 py-4'>
+    <section className='container mx-auto min-h-[calc(100vh-5rem)] flex flex-col px-4 py-4' lang='en'>
       <div className='flex flex-col lg:flex-row gap-8 flex-1'>
         {/* File Viewer Section */}
         <div className='bg-gray-800/50 flex-1 text-gray-200 rounded-lg px-4 py-2 

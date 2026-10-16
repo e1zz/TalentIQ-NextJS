@@ -129,7 +129,7 @@ export default function Chat() {
         <button
           onClick={downloadPDF}
           disabled={messages.length === 0}
-          className="px-4 py-2 bg-green-500 text-white rounded-sm disabled:opacity-50"
+          className="px-4 py-2.5 bg-green-700 hover:bg-green-800 text-white rounded-sm disabled:opacity-50"
         >
           Download Chat
         </button>
@@ -147,14 +147,14 @@ export default function Chat() {
         scrollbar-track-rounded-full
         pr-2"
       >
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4" role="log" aria-live="polite" aria-busy={isLoading}>
           {messages.map((message, index) => (
             <div key={index} className={`flex items-start gap-2 ${
               message.role === 'user' ? 'justify-end' : 'justify-start'
             }`}>
               {message.role === 'assistant' && (
                 <div className="w-8 h-8 shrink-0 rounded-full bg-linear-to-br from-blue-500 to-emerald-300 flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-white" />
+                  <Sparkles className="w-4 h-4 text-white" aria-hidden="true" />
                 </div>
               )}
               <article
@@ -186,7 +186,7 @@ export default function Chat() {
                         title={citation.citedText}
                         className="inline-flex items-center gap-1 rounded-full bg-white px-2 py-0.5 text-blue-700"
                       >
-                        <FileText className="h-3 w-3" />
+                        <FileText className="h-3 w-3" aria-hidden="true" />
                         {citationLabel(citation)}
                       </span>
                     ))}
@@ -199,7 +199,9 @@ export default function Chat() {
       </div>
 
       <form onSubmit={handleSubmit} className="flex gap-2">
+        <label htmlFor="chat-input" className="sr-only">Message</label>
         <input
+          id="chat-input"
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -209,7 +211,7 @@ export default function Chat() {
         />
         <button
           type="submit"
-          className={`px-4 py-2 bg-blue-500 text-white rounded-sm ${
+          className={`px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-sm ${
             isLoading ? 'opacity-50 cursor-not-allowed' : ''
           }`}
           disabled={isLoading}
