@@ -2,9 +2,9 @@
 
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/utils/supabase/client'
 
-const supabase = createClientComponentClient()
+const supabase = createClient()
 
 function ConfirmationContent() {
   const [message, setMessage] = useState('Verifying your email...')

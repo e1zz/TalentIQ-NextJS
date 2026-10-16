@@ -17,7 +17,7 @@ export default function Home() {
             <img 
               src="https://picsum.photos/1920/1080" 
               alt="Authentication wallpaper"
-              className="w-full h-full object-cover blur-sm brightness-50"
+              className="w-full h-full object-cover blur-xs brightness-50"
             />
           </div>
         </div>

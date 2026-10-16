@@ -2,7 +2,7 @@
 
 import { ChevronRight, ChevronLeft, FileText } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@/lib/utils/supabase/client';
 
 interface Question {
   id: string;
@@ -47,7 +47,7 @@ export default function CandidateSurvey() {
   const [isLoading, setIsLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
   
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   // Function to fetch PDFs from Supabase
   const fetchPDFs = async () => {
@@ -71,7 +71,7 @@ export default function CandidateSurvey() {
               .getPublicUrl(file.name);
 
             return {
-              id: file.id,
+              id: file.id ?? file.name,
               name: file.name,
               url: publicUrl
             };

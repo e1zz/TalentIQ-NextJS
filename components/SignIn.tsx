@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@/lib/utils/supabase/client';
+import { errorMessage } from '@/lib/utils';
 import InputField from './InputField';
 import Button from './Button';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { Check } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -23,7 +24,7 @@ const SignIn: React.FC<SignInProps> = ({ onForgotPassword }) => {
   const [rememberMe, setRememberMe] = useState(false);
   
   const router = useRouter();
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,8 +41,8 @@ const SignIn: React.FC<SignInProps> = ({ onForgotPassword }) => {
       toast.success('¡Sesión iniciada correctamente!');
       router.refresh();
       router.push('/dashboard');
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error) {
+      toast.error(errorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -70,8 +71,8 @@ const SignIn: React.FC<SignInProps> = ({ onForgotPassword }) => {
 
       toast.success('¡Cuenta creada correctamente!');
       router.push('/dashboard');
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error) {
+      toast.error(errorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -91,8 +92,8 @@ const SignIn: React.FC<SignInProps> = ({ onForgotPassword }) => {
       if (error) throw error;
 
       toast.success('Se ha enviado un enlace a tu correo para restablecer tu contraseña');
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error) {
+      toast.error(errorMessage(error));
     }
   };
 

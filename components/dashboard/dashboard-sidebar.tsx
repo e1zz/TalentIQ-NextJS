@@ -21,7 +21,7 @@ import {
   LogOut,
 } from 'lucide-react'
 import LogoutButton from '../auth/logout-button'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/utils/supabase/client'
 
 interface DashboardSidebarProps {
   collapsed: boolean
@@ -32,7 +32,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ collapsed, setColla
   const pathname = usePathname()
   const [mounted, setMounted] = useState(false)
   const router = useRouter()
-  const supabase = createClientComponentClient()
+  const supabase = createClient()
 
   const handleLogout = async () => {
     try {
@@ -250,7 +250,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ collapsed, setColla
       {/* Backdrop */}
       {!collapsed && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden portrait:block landscape:hidden max-h-[768px]:landscape:block"
+          className="fixed inset-0 bg-black/50 z-30 lg:hidden portrait:block landscape:hidden max-h-[768px]:landscape:block"
           onClick={() => setCollapsed(true)}
         />
       )}

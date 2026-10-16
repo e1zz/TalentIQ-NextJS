@@ -7,7 +7,7 @@ export default function HistoryPage() {
       <div className='flex flex-col lg:flex-row gap-8 flex-1'>
         {/* File Viewer Section */}
         <div className='bg-gray-800/50 flex-1 text-gray-200 rounded-lg px-4 py-2 
-                     placeholder-gray-400 focus:outline-none focus:ring-2 
+                     placeholder-gray-400 focus:outline-hidden focus:ring-2 
                      focus:ring-blue-500/50 border border-gray-700
                      h-[750px]'>
           <FileViewer />
@@ -15,7 +15,7 @@ export default function HistoryPage() {
 
         {/* Chat Section */}
         <div className='bg-gray-800/50 flex-1 text-gray-200 rounded-lg px-4 py-2 
-                     placeholder-gray-400 focus:outline-none focus:ring-2 
+                     placeholder-gray-400 focus:outline-hidden focus:ring-2 
                      focus:ring-blue-500/50 border border-gray-700
                      h-[750px]'>
           <Chat />

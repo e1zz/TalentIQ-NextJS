@@ -1,8 +1,8 @@
-'use client';  // Add this at the top since we're using framer-motion
+'use client';  // Add this at the top since we're using motion
 
 import Link from 'next/link';
 import { ArrowRight, Search, Users, LineChart, CheckCircle } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 
 interface FeatureCardProps {
   icon: React.ReactNode;
@@ -14,7 +14,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description }) =
   return (
     <motion.div
       whileHover={{ scale: 1.05 }}
-      className="p-8 rounded-xl bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700 hover:border-blue-500/50 transition-all shadow-lg"
+      className="p-8 rounded-xl bg-linear-to-br from-gray-800/50 to-gray-900/50 border border-gray-700 hover:border-blue-500/50 transition-all shadow-lg"
     >
       <div className="mb-4 text-blue-400 transform transition-transform group-hover:scale-110">
         {icon}
@@ -63,7 +63,7 @@ const orbPositions = [
 ];
 
 const StatsSection = () => (
-  <section className="py-20 px-4 bg-gradient-to-b from-gray-900 to-gray-800">
+  <section className="py-20 px-4 bg-linear-to-b from-gray-900 to-gray-800">
     <div className="container mx-auto">
       <div className="grid md:grid-cols-3 gap-8 text-center">
         {[
@@ -95,7 +95,7 @@ export default function Home() {
         {/* Base Background */}
         <div className="absolute inset-0 -z-10">
           {/* Dark gradient base */}
-          <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-900 to-gray-800" />
+          <div className="absolute inset-0 bg-linear-to-b from-gray-900 via-gray-900 to-gray-800" />
           
           {/* Grid Pattern */}
           <div 
@@ -183,7 +183,7 @@ export default function Home() {
             transition={{ duration: 0.8 }}
           >
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-              Encuentra tu <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Talento</span> Ideal
+              Encuentra tu <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-300">Talento</span> Ideal
             </h1>
             <p className="text-gray-300 text-xl md:text-2xl max-w-3xl mx-auto mb-12 leading-relaxed">
               Plataforma impulsada por IA para descubrir, evaluar y conectar con los mejores profesionales
@@ -192,7 +192,7 @@ export default function Home() {
               <motion.div whileHover={{ scale: 1.05 }}>
                 <Link 
                   href="/Auth/signIn"
-                  className="inline-flex items-center px-8 py-4 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:from-blue-700 hover:to-blue-600 transition-all text-lg font-semibold shadow-lg"
+                  className="inline-flex items-center px-8 py-4 rounded-lg bg-linear-to-r from-blue-600 to-blue-500 text-white hover:from-blue-700 hover:to-blue-600 transition-all text-lg font-semibold shadow-lg"
                 >
                   Comienza a Contratar
                   <ArrowRight className="ml-2 h-5 w-5" />

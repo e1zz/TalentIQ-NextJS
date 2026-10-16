@@ -15,7 +15,7 @@ import Logo from './logo'
 
 export default function Header() {
   return (
-    <header className='fixed inset-x-0 top-0 z-50 bg-background/20 py-6 backdrop-blur-sm'>
+    <header className='fixed inset-x-0 top-0 z-50 bg-background/20 py-6 backdrop-blur-xs'>
       <nav className='container flex items-center justify-between'>
         <Sheet>
           <SheetTrigger className='sm:hidden'>

@@ -6,7 +6,7 @@ import { Button } from "./ui/button"
 import { Bell, Settings } from "lucide-react"
 import { JSX, SVGProps } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/utils/supabase/client'
 import { useEffect, useState } from 'react'
 import { User } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
@@ -18,7 +18,7 @@ interface AuthorizedNavbarProps {
 export function Navbar() {
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
-  const supabase = createClientComponentClient()
+  const supabase = createClient()
 
   useEffect(() => {
     const getUser = async () => {
@@ -155,7 +155,7 @@ function AuthorizedNavbar({ onLogout }: AuthorizedNavbarProps) {
   )
 }
 
-function MenuIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function MenuIcon(props: React.JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -177,7 +177,7 @@ function MenuIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
 }
 
 
-function MountainIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function MountainIcon(props: React.JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}

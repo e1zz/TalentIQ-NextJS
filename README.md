@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TalentIQ
 
-## Getting Started
+AI-powered talent search for headhunters and recruiters hiring for specialized, managerial and executive roles.
 
-First, run the development server:
+## Stack
+
+- **Frontend:** Next.js 16 (App Router, Turbopack, React Compiler), React 19, Tailwind CSS 4 + shadcn/ui, Motion, Recharts 3
+- **Backend & data:** Next.js Route Handlers, `proxy.ts` session refresh, Supabase (Auth via `@supabase/ssr`, Postgres, Storage)
+- **AI:** Claude Opus 5.5 through the Anthropic TypeScript SDK: streaming chat, Files API for CVs and job descriptions, page-level citations, prompt caching and server-side refusal fallbacks
+- **Tooling:** TypeScript 7 (`tsc`) with the TypeScript 6 API kept for ESLint and Next.js, ESLint 10, Prettier, pnpm
+- **Analytics:** Vercel Analytics and Speed Insights, Hotjar
+
+## Getting started
+
+Create `.env.local`:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+ANTHROPIC_API_KEY=...
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+| Command | What it does |
+| --- | --- |
+| `pnpm dev` | Start the dev server (Turbopack) |
+| `pnpm build` | Production build |
+| `pnpm lint` | ESLint 10 (flat config) |
+| `pnpm typecheck` | Type check with TypeScript 7 |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## AI Assistant
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+`/dashboard/Assistant` lets a signed-in recruiter upload CVs and job descriptions (PDF or TXT) and chat with Claude about them.
 
-## Deploy on Vercel
+- `app/api/files/route.ts` lists, uploads and deletes documents with the Claude Files API.
+- `app/api/chat/route.ts` attaches every uploaded document to the conversation, streams Claude's answer as NDJSON, and returns citations to the CV pages the answer is based on.
+- `lib/anthropic.ts` holds the model ID and the system prompt, including the merit-based, bias-aware screening rules.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Both API routes require a Supabase session.
