@@ -1,6 +1,7 @@
 'use client'
 
 import { ThemeProvider, useTheme } from 'next-themes'
+import { MotionConfig } from 'motion/react'
 import { Toaster } from '@/components/ui/sonner'
 
 export default function Providers({ children }: { children: React.ReactNode }) {
@@ -11,7 +12,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       defaultTheme='dark'
       disableTransitionOnChange
     >
-      {children}
+      <MotionConfig reducedMotion='user'>{children}</MotionConfig>
       <ToasterProvider />
     </ThemeProvider>
   )

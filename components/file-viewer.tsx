@@ -1,9 +1,11 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
+import type { ContextFile } from "@/types/chat";
 
 const TrashIcon = () => (
   <svg
+    aria-hidden="true"
     className="h-4 w-4 text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 12 12"
@@ -17,50 +19,60 @@ const TrashIcon = () => (
   </svg>
 );
 
-interface FileData {
-  file_id: string;
-  filename: string;
-  status: string;
-}
+const formatSize = (bytes: number) =>
+  bytes < 1024 * 1024 ? `${Math.round(bytes / 1024)} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 
 const FileViewer = () => {
-  const [files, setFiles] = useState<FileData[]>([]);
+  const [files, setFiles] = useState<ContextFile[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const fetchFiles = () =>
+    fetch("/api/files")
+      .then(async (resp) => ({ ok: resp.ok, data: await resp.json() }))
+      .then(({ ok, data }) => {
+        if (!ok) {
+          setError(data.error ?? "Failed to load files");
+          return;
+        }
+        setError(null);
+        setFiles(data);
+      })
+      .catch(() => setError("Failed to load files"));
 
   useEffect(() => {
-    // Initial fetch
     fetchFiles();
-    
-    // Poll every 5 seconds instead of every second
-    const interval = setInterval(() => {
-      fetchFiles();
-    }, 5000); // Changed from 1000 to 5000
-
-    return () => clearInterval(interval);
   }, []);
 
-  const fetchFiles = async () => {
-    const resp = await fetch("/api/assistants/files", {
-      method: "GET",
-    });
-    const data = await resp.json();
-    setFiles(data);
-  };
-
-  const handleFileDelete = async (fileId: any) => {
-    await fetch("/api/assistants/files", {
+  const handleFileDelete = async (fileId: string) => {
+    const resp = await fetch("/api/files", {
       method: "DELETE",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ fileId }),
     });
+    if (!resp.ok) {
+      setError((await resp.json()).error ?? "Failed to delete file");
+      return;
+    }
+    await fetchFiles();
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const data = new FormData();
-    if (!event.target.files?.length) return;
-    data.append("file", event.target.files[0]);
-    await fetch("/api/assistants/files", {
-      method: "POST",
-      body: data,
-    });
+    const selected = Array.from(event.target.files ?? []);
+    event.target.value = "";
+    if (!selected.length) return;
+
+    setUploading(true);
+    const errors: string[] = [];
+    for (const file of selected) {
+      const data = new FormData();
+      data.append("file", file);
+      const resp = await fetch("/api/files", { method: "POST", body: data });
+      if (!resp.ok) errors.push(`${file.name}: ${(await resp.json()).error ?? "upload failed"}`);
+    }
+    setUploading(false);
+    await fetchFiles();
+    setError(errors.length ? errors.join(" · ") : null);
   };
 
   return (
@@ -68,7 +80,7 @@ const FileViewer = () => {
       <div className={`flex-1 overflow-auto ${files.length === 0 ? 'flex items-center justify-center' : ''}`}>
         {files.length === 0 ? (
           <p className="text-gray-400 text-sm font-light italic">
-            Attach files to test file search
+            Attach CVs or job descriptions (PDF or TXT) for Claude to read
           </p>
         ) : (
           <div className="space-y-2">
@@ -82,12 +94,14 @@ const FileViewer = () => {
                     {file.filename}
                   </span>
                   <span className="text-xs font-light text-gray-400">
-                    {file.status}
+                    {formatSize(file.size_bytes)} · {new Date(file.created_at).toLocaleDateString()}
                   </span>
                 </div>
                 <button
                   onClick={() => handleFileDelete(file.file_id)}
-                  className="p-1 rounded-full hover:bg-gray-700/50"
+                  aria-label={`Delete ${file.filename}`}
+                  title="Delete file"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full hover:bg-gray-700/50"
                 >
                   <TrashIcon />
                 </button>
@@ -97,14 +111,17 @@ const FileViewer = () => {
         )}
       </div>
 
+      {error && <p role="alert" className="mt-2 text-sm text-red-400">{error}</p>}
+
       <div className="mt-4">
         <label 
           htmlFor="file-upload" 
-          className="inline-flex items-center px-4 py-2 rounded-md border border-gray-200/20 
+          className="inline-flex items-center px-4 py-2.5 rounded-md border border-gray-200/20 has-[+input:focus-visible]:outline-2 has-[+input:focus-visible]:outline-sky-400 
                    text-sm font-medium text-gray-200 hover:bg-gray-800/40 hover:text-white
                    cursor-pointer transition-colors"
         >
-          <svg 
+          <svg
+            aria-hidden="true"
             className="w-4 h-4 mr-2" 
             fill="none" 
             stroke="currentColor" 
@@ -117,7 +134,7 @@ const FileViewer = () => {
               d="M12 4v16m8-8H4" 
             />
           </svg>
-          <span className="font-medium">Attach files</span>
+          <span className="font-medium">{uploading ? "Uploading..." : "Attach files"}</span>
         </label>
         <input
           type="file"
@@ -125,6 +142,8 @@ const FileViewer = () => {
           name="file-upload"
           className="sr-only"
           multiple
+          accept=".pdf,.txt,application/pdf,text/plain"
+          disabled={uploading}
           onChange={handleFileUpload}
         />
       </div>

@@ -1,13 +1,10 @@
 'use client'
 
 import { useEffect } from 'react'
+import Hotjar from '@hotjar/browser'
 
-declare global {
-  interface Window {
-    hj: any
-    _hjSettings: any
-  }
-}
+const HOTJAR_SITE_ID = 5211028
+const HOTJAR_VERSION = 6
 
 type HotjarProviderProps = {
   children: React.ReactNode
@@ -15,17 +12,7 @@ type HotjarProviderProps = {
 
 export function HotjarProvider({ children }: HotjarProviderProps) {
   useEffect(() => {
-    if (typeof window !== 'undefined') {  // Check for browser environment
-      (function(h: any,o: Document,t: string,j: string,a?: any,r?: any){
-          h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-          h._hjSettings={hjid:5211028,hjsv:6};
-          a=o.getElementsByTagName('head')[0];
-          r=o.createElement('script');
-          r.async=1;
-          r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-          a.appendChild(r);
-      })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-    }
+    Hotjar.init(HOTJAR_SITE_ID, HOTJAR_VERSION)
   }, [])
 
   return <>{children}</>

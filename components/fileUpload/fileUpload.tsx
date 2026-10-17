@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { Upload } from 'lucide-react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@/lib/utils/supabase/client';
+import { errorMessage } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
 interface FileUploadProps {
@@ -19,7 +20,7 @@ const FileUpload = ({
   selectedLabels = []
 }: FileUploadProps) => {
   const [uploading, setUploading] = useState(false);
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -73,10 +74,10 @@ const FileUpload = ({
 
         onUploadSuccess?.();
         resolve('File uploaded successfully!');
-      } catch (error: any) {
+      } catch (error) {
         console.error('Error uploading file:', error);
-        onUploadError?.(error.message);
-        reject(error.message);
+        onUploadError?.(errorMessage(error));
+        reject(errorMessage(error));
       } finally {
         setUploading(false);
       }

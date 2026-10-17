@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { Building, Users, Globe, Award, ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -28,7 +28,7 @@ export default function About() {
   const router = useRouter();
 
   return (
-    <main className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-gray-900">
       {/* Back Button */}
       <div className="container mx-auto px-4 pt-6">
         <button
@@ -87,6 +87,6 @@ export default function About() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 } 

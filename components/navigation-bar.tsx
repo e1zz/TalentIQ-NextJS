@@ -6,45 +6,33 @@ import { Button } from "./ui/button"
 import { Bell, Settings } from "lucide-react"
 import { JSX, SVGProps } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { useEffect, useState } from 'react'
-import { User } from '@supabase/supabase-js'
-import { useRouter } from 'next/navigation'
+import { Show, useClerk } from '@clerk/nextjs'
 
 interface AuthorizedNavbarProps {
   onLogout: () => Promise<void>;
 }
 
 export function Navbar() {
-  const router = useRouter()
-  const [user, setUser] = useState<User | null>(null)
-  const supabase = createClientComponentClient()
-
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
-    }
-    
-    getUser()
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [supabase])
+  const { signOut } = useClerk()
 
   async function handleLogout() {
     try {
-      await supabase.auth.signOut()
-      router.push('/Auth/signIn')
+      await signOut({ redirectUrl: '/sign-in' })
     } catch (error) {
       console.error('Error al cerrar sesión:', error)
     }
   }
 
-  return user ? <AuthorizedNavbar onLogout={handleLogout} /> : <UnauthorizedNavbar />
+  return (
+    <>
+      <Show when="signed-in">
+        <AuthorizedNavbar onLogout={handleLogout} />
+      </Show>
+      <Show when="signed-out">
+        <UnauthorizedNavbar />
+      </Show>
+    </>
+  )
 }
 
 function UnauthorizedNavbar() {
@@ -56,13 +44,13 @@ function UnauthorizedNavbar() {
       </Link>
       <div className="hidden md:flex gap-4">
         <Link 
-          href="/Auth/signIn" 
+          href="/sign-in" 
           className="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
         >
           Iniciar Sesión
         </Link>
         <Link 
-          href="/Auth/signIn" 
+          href="/sign-up" 
           className="px-4 py-2 text-sm font-semibold text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 hover:text-black transition-colors"
         >
           Registrarse
@@ -80,10 +68,10 @@ function UnauthorizedNavbar() {
             <SheetTitle>Menú de Navegación</SheetTitle>
           </SheetHeader>
           <nav className="grid w-[200px] p-4">
-            <Link href="/Auth/signIn" className="text-lg font-medium hover:underline underline-offset-4">
+            <Link href="/sign-in" className="text-lg font-medium hover:underline underline-offset-4">
               Iniciar Sesión
             </Link>
-            <Link href="/Auth/signIn" className="text-lg font-medium hover:underline underline-offset-4">
+            <Link href="/sign-up" className="text-lg font-medium hover:underline underline-offset-4">
               Registrarse
             </Link>
           </nav>
@@ -101,15 +89,15 @@ function AuthorizedNavbar({ onLogout }: AuthorizedNavbarProps) {
         <span className="text-lg font-semibold">TalentIQ</span>
       </Link>
       <div className="hidden md:flex gap-4">
-        <Link href="#" className="group inline-flex w-max items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-semibold transition-colors hover:bg-gray-100 hover:text-gray-900" title="Configuración">
-          <Settings />
+        <Link href="#" className="group inline-flex w-max items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-semibold transition-colors hover:bg-gray-100 hover:text-gray-900" title="Configuración" aria-label="Configuración">
+          <Settings aria-hidden="true" />
         </Link>
-        <Link href="#" className="group inline-flex w-max items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-semibold transition-colors hover:bg-gray-100 hover:text-gray-900" title="Notificaciones">
-          <Bell />
+        <Link href="#" className="group inline-flex w-max items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-semibold transition-colors hover:bg-gray-100 hover:text-gray-900" title="Notificaciones" aria-label="Notificaciones">
+          <Bell aria-hidden="true" />
         </Link>
-        <Link href="#" className="w-max items-center justify-center rounded-md  px-4 py-2" prefetch={false}>
+        <Link href="#" aria-label="Mi perfil" className="w-max items-center justify-center rounded-md  px-4 py-2" prefetch={false}>
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarImage src="https://github.com/shadcn.png" alt="" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
 
@@ -155,7 +143,7 @@ function AuthorizedNavbar({ onLogout }: AuthorizedNavbarProps) {
   )
 }
 
-function MenuIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function MenuIcon(props: React.JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -177,7 +165,7 @@ function MenuIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
 }
 
 
-function MountainIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function MountainIcon(props: React.JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}

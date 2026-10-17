@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@/lib/utils/supabase/client';
 import { FileObject } from '@supabase/storage-js';
 import { Download, Trash2 } from 'lucide-react';
 
@@ -20,29 +20,32 @@ export default function PdfFileList() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
-  const fetchPdfFiles = async () => {
-    try {
-      const { data, error } = await supabase
-        .storage
-        .from('candidates')
-        .list();
+  const loadPdfFiles = async () => {
+    const { data, error } = await supabase
+      .storage
+      .from('candidates')
+      .list();
 
-      if (error) {
-        throw error;
-      }
+    if (error) throw error;
 
-      // Filter for PDF files only
-      const pdfFiles = data.filter(file => file.name.toLowerCase().endsWith('.pdf'));
-      setFiles(pdfFiles);
-      setError(null); // Clear any previous errors
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch PDF files');
-    } finally {
-      setIsLoading(false);
-    }
+    // Filter for PDF files only
+    return data.filter(file => file.name.toLowerCase().endsWith('.pdf'));
   };
+
+  const fetchPdfFiles = () =>
+    loadPdfFiles()
+      .then(pdfFiles => {
+        setFiles(pdfFiles);
+        setError(null); // Clear any previous errors
+      })
+      .catch(err => {
+        setError(err instanceof Error ? err.message : 'Failed to fetch PDF files');
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
 
   useEffect(() => {
     fetchPdfFiles();
@@ -106,11 +109,11 @@ export default function PdfFileList() {
   };
 
   if (isLoading) {
-    return <div className="text-gray-400">Loading PDF files...</div>;
+    return <div className="text-gray-400" role="status">Loading PDF files...</div>;
   }
 
   if (error) {
-    return <div className="text-red-400">Error: {error}</div>;
+    return <div className="text-red-400" role="alert">Error: {error}</div>;
   }
 
   return (
@@ -134,7 +137,7 @@ export default function PdfFileList() {
                 </span>
                 <div className="flex items-center gap-4">
                   <span className="text-sm text-gray-400">
-                    {(file.metadata?.size / 1024 / 1024).toFixed(2)} MB
+                    {((file.metadata?.size ?? 0) / 1024 / 1024).toFixed(2)} MB
                   </span>
                   <div className="flex gap-2">
                     <button
@@ -143,7 +146,7 @@ export default function PdfFileList() {
                       title="Download file"
                       aria-label="Download file"
                     >
-                      <Download className="h-4 w-4" />
+                      <Download className="h-4 w-4" aria-hidden="true" />
                     </button>
                     <button
                       onClick={() => handleDelete(file)}
@@ -151,7 +154,7 @@ export default function PdfFileList() {
                       title="Delete file"
                       aria-label="Delete file"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-4 w-4" aria-hidden="true" />
                     </button>
                   </div>
                 </div>

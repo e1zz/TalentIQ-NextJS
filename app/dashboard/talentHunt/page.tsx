@@ -2,7 +2,7 @@
 
 import { ChevronRight, ChevronLeft, FileText } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@/lib/utils/supabase/client';
 
 interface Question {
   id: string;
@@ -47,7 +47,7 @@ export default function CandidateSurvey() {
   const [isLoading, setIsLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
   
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   // Function to fetch PDFs from Supabase
   const fetchPDFs = async () => {
@@ -71,7 +71,7 @@ export default function CandidateSurvey() {
               .getPublicUrl(file.name);
 
             return {
-              id: file.id,
+              id: file.id ?? file.name,
               name: file.name,
               url: publicUrl
             };
@@ -114,14 +114,14 @@ export default function CandidateSurvey() {
 
   if (showResults) {
     return (
-      <main className="min-h-screen p-6">
+      <div className="min-h-screen p-6">
         <div className="container mx-auto max-w-4xl">
           <h2 className="text-2xl font-bold text-white mb-6">
             Resultados de la búsqueda
           </h2>
           
           {isLoading ? (
-            <div className="text-white text-center py-8">Cargando PDFs...</div>
+            <div className="text-white text-center py-8" role="status">Cargando PDFs...</div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {pdfs.map((pdf) => (
@@ -135,7 +135,7 @@ export default function CandidateSurvey() {
                     rel="noopener noreferrer"
                     className="flex items-center text-white"
                   >
-                    <FileText className="h-6 w-6 mr-3 text-blue-500" />
+                    <FileText className="h-6 w-6 mr-3 text-blue-500" aria-hidden="true" />
                     <div>
                       <p className="font-medium">{pdf.name}</p>
                       <p className="text-sm text-gray-400">Click para ver el PDF</p>
@@ -153,16 +153,23 @@ export default function CandidateSurvey() {
             Volver al cuestionario
           </button>
         </div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-6">
+    <div className="min-h-screen flex items-center justify-center p-6">
       <div className="w-full max-w-2xl">
         {/* Progress bar */}
         <div className="mb-8">
-          <div className="h-2 bg-gray-700 rounded-full">
+          <div
+            className="h-2 bg-gray-700 rounded-full"
+            role="progressbar"
+            aria-label="Progreso del cuestionario"
+            aria-valuemin={1}
+            aria-valuemax={questions.length}
+            aria-valuenow={currentQuestion + 1}
+          >
             <div 
               className="h-2 bg-blue-600 rounded-full transition-all duration-300"
               style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
@@ -175,16 +182,17 @@ export default function CandidateSurvey() {
 
         {/* Question card */}
         <div className="bg-gray-800 rounded-lg p-8 shadow-lg">
-          <h2 className="text-2xl font-bold text-white mb-6">
+          <h2 id="question-title" className="text-2xl font-bold text-white mb-6">
             {question.question}
           </h2>
 
           {/* Options */}
-          <div className="space-y-3">
+          <div className="space-y-3" role="group" aria-labelledby="question-title">
             {question.options.map((option) => (
               <button
                 key={option}
                 onClick={() => handleOptionSelect(question.id, option)}
+                aria-pressed={answers[question.id] === option}
                 className={`w-full text-left p-4 rounded-lg transition-colors ${
                   answers[question.id] === option
                     ? 'bg-blue-600 text-white'
@@ -207,7 +215,7 @@ export default function CandidateSurvey() {
                   : 'bg-gray-700 text-white hover:bg-gray-600'
               }`}
             >
-              <ChevronLeft className="h-5 w-5 mr-2" />
+              <ChevronLeft className="h-5 w-5 mr-2" aria-hidden="true" />
               Anterior
             </button>
 
@@ -224,12 +232,12 @@ export default function CandidateSurvey() {
                 className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
               >
                 Siguiente
-                <ChevronRight className="h-5 w-5 ml-2" />
+                <ChevronRight className="h-5 w-5 ml-2" aria-hidden="true" />
               </button>
             )}
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 } 
