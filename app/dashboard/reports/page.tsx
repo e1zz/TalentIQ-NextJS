@@ -1,104 +1,131 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Overview } from "@/components/overview"
-import { RecentSales } from "@/components/recent-sales"
-import { Button } from "@/components/ui/button"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
-import { DepartmentChart } from "@/components/department-chart"
+'use client'
 
-export default function DashboardPage() {
+import { useQuery } from 'convex/react'
+import { Download } from 'lucide-react'
+
+import { api } from '@/convex/_generated/api'
+import { BarChart, HrButton, MeterRow, PageHeader, SectionCard } from '@/components/hr'
+import { KpiCard } from '@/components/screens/kpi'
+import { LoadingRows, Skeleton } from '@/components/screens/skeleton'
+import { formatNumber, pluralize } from '@/lib/format'
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const monthLabel = (period: string) => MONTHS[Number(period.slice(5, 7)) - 1] ?? period
+
+type Overview = NonNullable<ReturnType<typeof useOverview>>
+function useOverview() {
+  return useQuery(api.reports.overview, {})
+}
+
+function exportCsv(data: Overview) {
+  const rows: (string | number)[][] = [
+    ['Section', 'Label', 'Value', 'Detail'],
+    ...data.kpis.map(k => ['KPI', k.label, k.value, `${k.delta >= 0 ? '+' : ''}${k.delta} vs last month`]),
+    ...data.timeToHireByMonth.map(p => ['Time to hire (median days)', p.period, p.value, '']),
+    ...data.hiresBySource.map(s => ['Hires by source', s.source, s.hires, `${s.pct}%`]),
+    ...data.headcountByDepartment.map(d => ['Headcount', d.department, d.headcount, `${d.ytdDelta >= 0 ? '+' : ''}${d.ytdDelta} YTD`]),
+    ...data.pipelineConversion.map(p => ['Pipeline', p.stage, p.count, p.conversionFromPreviousPct === null ? '' : `${p.conversionFromPreviousPct}%`])
+  ]
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n')
+  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }))
+  const a = Object.assign(document.createElement('a'), { href: url, download: `talentiq-report-${data.period}.csv` })
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+export default function ReportsPage() {
+  const data = useOverview()
+  const year = data?.period.slice(0, 4)
+  const range = data ? `Jan – ${monthLabel(data.period)} ${year}` : undefined
+  const totalHires = data?.hiresBySource.reduce((s, h) => s + h.hires, 0) ?? 0
+  const totalHeadcount = data?.headcountByDepartment.reduce((s, d) => s + d.headcount, 0) ?? 0
+
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6" lang="en">
-      <div className="flex items-center justify-between space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-        <div className="flex items-center space-x-2">
-        </div>
+    <div className='flex flex-col gap-6'>
+      <PageHeader
+        title='Reports'
+        subtitle={range ? `Hiring and people analytics · ${range}` : undefined}
+        actions={
+          <HrButton variant='primary' disabled={!data} onClick={() => data && exportCsv(data)}>
+            <Download aria-hidden='true' />
+            Export CSV
+          </HrButton>
+        }
+      />
+
+      <div className='grid gap-4 sm:grid-cols-2 xl:grid-cols-4'>
+        {data ? data.kpis.map(k => <KpiCard key={k.key} kpi={k} />) : Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className='h-32' />)}
       </div>
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          <TabsTrigger value="reports">Reports</TabsTrigger>
-        </TabsList>
-        <TabsContent value="overview" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-4x1 font-bold">
-                  Total Revenue
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-lg font-bold">$45,231.89</div>
-                <p className="text-sm text-muted-foreground text-center">
-                  +20.1% from last month
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-4x1 font-bold">
-                  Active Users
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-lg font-bold">+2350</div>
-                <p className="text-xs text-muted-foreground text-center">
-                  +180.1% from last month
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-4x1 font-bold">
-                  Sales
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-lg font-bold">+12,234</div>
-                <p className="text-xs text-muted-foreground text-center">
-                  +19% from last month
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-4x1 font-bold">
-                  Active Now
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-lg font-bold">+573</div>
-                <p className="text-xs text-muted-foreground text-center">
-                  +201 since last hour
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-            <Card className="col-span-4">
-              <CardHeader>
-                <CardTitle className="text-[40px] font-bold">Overview</CardTitle>
-              </CardHeader>
-              <CardContent className="pl-2">
-                <Overview />
-              </CardContent>
-            </Card>
-            <Card className="col-span-3">
-              <CardHeader>
-                <CardTitle className="text-4x1 font-bold">Department Activities</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <DepartmentChart />
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-      </Tabs>
+
+      <div className='grid gap-6 xl:grid-cols-2'>
+        <SectionCard title='Time to hire by month' meta='median days'>
+          {data ? (
+            <BarChart
+              label='Median days to hire by month'
+              valueHeader='Median days'
+              highlightLast
+              data={data.timeToHireByMonth.map(p => ({ label: monthLabel(p.period), value: p.value }))}
+            />
+          ) : (
+            <Skeleton className='h-56' />
+          )}
+        </SectionCard>
+
+        <SectionCard title='Hires by source' meta={data ? pluralize(totalHires, 'hire') : undefined}>
+          {data ? (
+            <div className='flex flex-col gap-3'>
+              {data.hiresBySource.map(s => (
+                <MeterRow key={s.source} label={s.source} value={s.pct} displayValue={`${s.pct}%`} note={pluralize(s.hires, 'hire')} />
+              ))}
+            </div>
+          ) : (
+            <LoadingRows rows={5} label='Loading sources' />
+          )}
+        </SectionCard>
+
+        <SectionCard
+          title='Headcount by department'
+          meta={data ? pluralize(totalHeadcount, 'person', 'people') : undefined}
+          action={{ label: 'View in Employees', href: '/dashboard/employees' }}
+        >
+          {data ? (
+            <div className='flex flex-col gap-3'>
+              {data.headcountByDepartment.map(d => (
+                <MeterRow
+                  key={d.department}
+                  label={d.department}
+                  value={d.headcount}
+                  max={Math.max(...data.headcountByDepartment.map(x => x.headcount), 1)}
+                  tone='brand-light'
+                  note={`${d.ytdDelta > 0 ? '+' : ''}${d.ytdDelta} YTD`}
+                />
+              ))}
+            </div>
+          ) : (
+            <LoadingRows rows={8} label='Loading headcount' />
+          )}
+        </SectionCard>
+
+        <SectionCard title='Pipeline conversion' meta='step-to-step conversion' action={{ label: 'View in Jobs', href: '/dashboard/jobs' }}>
+          {data ? (
+            <div className='flex flex-col gap-3'>
+              {data.pipelineConversion.map(p => (
+                <MeterRow
+                  key={p.stage}
+                  label={p.stage}
+                  value={p.count}
+                  max={Math.max(data.pipelineConversion[0]?.count ?? 1, 1)}
+                  displayValue={formatNumber(p.count)}
+                  tone='success'
+                  note={p.conversionFromPreviousPct === null ? '100%' : `${p.conversionFromPreviousPct}%`}
+                />
+              ))}
+            </div>
+          ) : (
+            <LoadingRows rows={5} label='Loading pipeline' />
+          )}
+        </SectionCard>
+      </div>
     </div>
   )
 }
