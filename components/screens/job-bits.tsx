@@ -1,5 +1,14 @@
 import { StatusPill, type StatusTone } from '@/components/hr'
 import type { JobCard } from '@/convex/lib/jobCards'
+import type { Stage } from '@/convex/lib/validators'
+
+export const STAGE_TONE: Record<Stage, StatusTone> = {
+  Applied: 'neutral',
+  Screening: 'neutral',
+  Interview: 'info',
+  Offer: 'warning',
+  Hired: 'success'
+}
 
 export const HEALTH_TONE: Record<NonNullable<JobCard['health']>, StatusTone> = {
   'On track': 'success',
