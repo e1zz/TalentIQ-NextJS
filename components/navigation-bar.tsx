@@ -101,15 +101,15 @@ function AuthorizedNavbar({ onLogout }: AuthorizedNavbarProps) {
         <span className="text-lg font-semibold">TalentIQ</span>
       </Link>
       <div className="hidden md:flex gap-4">
-        <Link href="#" className="group inline-flex w-max items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-semibold transition-colors hover:bg-gray-100 hover:text-gray-900" title="Configuración">
-          <Settings />
+        <Link href="#" className="group inline-flex w-max items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-semibold transition-colors hover:bg-gray-100 hover:text-gray-900" title="Configuración" aria-label="Configuración">
+          <Settings aria-hidden="true" />
         </Link>
-        <Link href="#" className="group inline-flex w-max items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-semibold transition-colors hover:bg-gray-100 hover:text-gray-900" title="Notificaciones">
-          <Bell />
+        <Link href="#" className="group inline-flex w-max items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-semibold transition-colors hover:bg-gray-100 hover:text-gray-900" title="Notificaciones" aria-label="Notificaciones">
+          <Bell aria-hidden="true" />
         </Link>
-        <Link href="#" className="w-max items-center justify-center rounded-md  px-4 py-2" prefetch={false}>
+        <Link href="#" aria-label="Mi perfil" className="w-max items-center justify-center rounded-md  px-4 py-2" prefetch={false}>
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarImage src="https://github.com/shadcn.png" alt="" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
 

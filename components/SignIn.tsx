@@ -28,6 +28,7 @@ const SignIn: React.FC<SignInProps> = ({ onForgotPassword }) => {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     setLoading(true);
 
     try {
@@ -42,7 +43,7 @@ const SignIn: React.FC<SignInProps> = ({ onForgotPassword }) => {
       router.refresh();
       router.push('/dashboard');
     } catch (error) {
-      toast.error(errorMessage(error));
+      setError(errorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -50,10 +51,11 @@ const SignIn: React.FC<SignInProps> = ({ onForgotPassword }) => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     setLoading(true);
 
     if (password !== confirmPassword) {
-      toast.error("Las contraseñas no coinciden");
+      setError("Las contraseñas no coinciden");
       setLoading(false);
       return;
     }
@@ -72,15 +74,16 @@ const SignIn: React.FC<SignInProps> = ({ onForgotPassword }) => {
       toast.success('¡Cuenta creada correctamente!');
       router.push('/dashboard');
     } catch (error) {
-      toast.error(errorMessage(error));
+      setError(errorMessage(error));
     } finally {
       setLoading(false);
     }
   };
 
   const handleForgotPassword = async () => {
+    setError(null);
     if (!email) {
-      toast.error('Por favor ingresa tu correo electrónico');
+      setError('Ingresa tu correo electrónico para restablecer tu contraseña');
       return;
     }
 
@@ -93,7 +96,7 @@ const SignIn: React.FC<SignInProps> = ({ onForgotPassword }) => {
 
       toast.success('Se ha enviado un enlace a tu correo para restablecer tu contraseña');
     } catch (error) {
-      toast.error(errorMessage(error));
+      setError(errorMessage(error));
     }
   };
 
@@ -120,9 +123,9 @@ const SignIn: React.FC<SignInProps> = ({ onForgotPassword }) => {
           </motion.h1>
           
           {error && (
-            <div className="z-0 text-red-500 text-sm font-medium mb-4">
+            <p id="auth-error" role="alert" className="z-0 w-full rounded-lg bg-red-950/80 px-3 py-2 text-sm font-medium text-red-300">
               {error}
-            </div>
+            </p>
           )}
 
           <AnimatePresence mode="wait">
@@ -134,32 +137,54 @@ const SignIn: React.FC<SignInProps> = ({ onForgotPassword }) => {
               className="flex flex-col items-center gap-3.5 w-full"
             >
               <div className="w-full space-y-3.5">
-                <InputField
-                  type="email"
-                  placeholder="usuario123@talentiq.com"
-                  aria-label="Correo electrónico"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full"
-                />
-                <InputField
-                  type="password"
-                  placeholder="******************"
-                  aria-label="Contraseña"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full"
-                />
-                
-                {isSignUp && (
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="auth-email" className="text-sm font-medium text-white">
+                    Correo electrónico
+                  </label>
                   <InputField
-                    type="password"
-                    placeholder="Confirmar Contraseña"
-                    aria-label="Confirmar Contraseña"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    id="auth-email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    placeholder="nombre@empresa.com"
+                    aria-describedby={error ? 'auth-error' : undefined}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full"
                   />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="auth-password" className="text-sm font-medium text-white">
+                    Contraseña
+                  </label>
+                  <InputField
+                    id="auth-password"
+                    type="password"
+                    autoComplete={isSignUp ? 'new-password' : 'current-password'}
+                    required
+                    aria-describedby={error ? 'auth-error' : undefined}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+
+                {isSignUp && (
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="auth-confirm-password" className="text-sm font-medium text-white">
+                      Confirmar contraseña
+                    </label>
+                    <InputField
+                      id="auth-confirm-password"
+                      type="password"
+                      autoComplete="new-password"
+                      required
+                      aria-describedby={error ? 'auth-error' : undefined}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full"
+                    />
+                  </div>
                 )}
               </div>
             </motion.div>
@@ -181,9 +206,9 @@ const SignIn: React.FC<SignInProps> = ({ onForgotPassword }) => {
                     type="checkbox" 
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="sr-only" 
+                    className="peer sr-only"
                   />
-                  <div className={`w-6 h-6 sm:w-5 sm:h-5 border-2 rounded-md ${
+                  <div aria-hidden="true" className={`w-6 h-6 sm:w-5 sm:h-5 border-2 rounded-md peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-sky-400 ${
                     rememberMe ? 'bg-sky-500 border-sky-500' : 'border-neutral-400'
                   } transition-colors`}>
                     {rememberMe && (

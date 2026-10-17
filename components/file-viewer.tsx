@@ -5,6 +5,7 @@ import type { ContextFile } from "@/types/chat";
 
 const TrashIcon = () => (
   <svg
+    aria-hidden="true"
     className="h-4 w-4 text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 12 12"
@@ -98,7 +99,9 @@ const FileViewer = () => {
                 </div>
                 <button
                   onClick={() => handleFileDelete(file.file_id)}
-                  className="p-1 rounded-full hover:bg-gray-700/50"
+                  aria-label={`Delete ${file.filename}`}
+                  title="Delete file"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full hover:bg-gray-700/50"
                 >
                   <TrashIcon />
                 </button>
@@ -108,16 +111,17 @@ const FileViewer = () => {
         )}
       </div>
 
-      {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
+      {error && <p role="alert" className="mt-2 text-sm text-red-400">{error}</p>}
 
       <div className="mt-4">
         <label 
           htmlFor="file-upload" 
-          className="inline-flex items-center px-4 py-2 rounded-md border border-gray-200/20 
+          className="inline-flex items-center px-4 py-2.5 rounded-md border border-gray-200/20 has-[+input:focus-visible]:outline-2 has-[+input:focus-visible]:outline-sky-400 
                    text-sm font-medium text-gray-200 hover:bg-gray-800/40 hover:text-white
                    cursor-pointer transition-colors"
         >
-          <svg 
+          <svg
+            aria-hidden="true"
             className="w-4 h-4 mr-2" 
             fill="none" 
             stroke="currentColor" 

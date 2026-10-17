@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ArrowRight, Search, Users, LineChart, CheckCircle } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 
 interface FeatureCardProps {
   icon: React.ReactNode;
@@ -88,12 +88,14 @@ const StatsSection = () => (
 );
 
 export default function Home() {
+  const reduceMotion = useReducedMotion();
+
   return (
-    <main className="min-h-screen">
+    <div className="min-h-screen">
       {/* Hero Section - Updated */}
       <section className="relative py-32 px-4 overflow-hidden">
         {/* Base Background */}
-        <div className="absolute inset-0 -z-10">
+        <div className="absolute inset-0 -z-10" aria-hidden="true">
           {/* Dark gradient base */}
           <div className="absolute inset-0 bg-linear-to-b from-gray-900 via-gray-900 to-gray-800" />
           
@@ -109,7 +111,8 @@ export default function Home() {
             }}
           />
 
-          {/* Animated gradient overlay */}
+          {/* Animated gradient overlay (decorative loops are skipped for reduced motion) */}
+          {!reduceMotion && (
           <motion.div
             className="absolute inset-0 opacity-30"
             style={{
@@ -127,7 +130,10 @@ export default function Home() {
             }}
           />
 
+          )}
+
           {/* Floating particles */}
+          {!reduceMotion && <>
           {particlePositions.map((position, i) => (
             <FloatingParticle 
               key={i} 
@@ -161,6 +167,8 @@ export default function Home() {
               />
             ))}
           </div>
+
+          </>}
 
           {/* Scanlines effect */}
           <div 
@@ -259,6 +267,6 @@ export default function Home() {
 
       {/* Insert Stats Section */}
       <StatsSection />
-    </main>
+    </div>
   );
 }
