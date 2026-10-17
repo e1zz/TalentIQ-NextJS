@@ -2,7 +2,7 @@
 
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import {
   LayoutDashboard,
@@ -21,7 +21,7 @@ import {
   LogOut,
 } from 'lucide-react'
 import LogoutButton from '../auth/logout-button'
-import { createClient } from '@/lib/utils/supabase/client'
+import { useClerk } from '@clerk/nextjs'
 
 interface DashboardSidebarProps {
   collapsed: boolean
@@ -31,16 +31,11 @@ interface DashboardSidebarProps {
 const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ collapsed, setCollapsed }) => {
   const pathname = usePathname()
   const [mounted, setMounted] = useState(false)
-  const router = useRouter()
-  const supabase = createClient()
+  const { signOut } = useClerk()
 
   const handleLogout = async () => {
     try {
-      const { error } = await supabase.auth.signOut()
-      if (error) throw error
-      
-      router.push('/')
-      router.refresh()
+      await signOut({ redirectUrl: '/' })
     } catch (error) {
       console.error('Error signing out:', error)
     }

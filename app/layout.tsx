@@ -2,6 +2,8 @@ import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import Providers from '@/components/providers'
+import ConvexClientProvider from '@/components/convex-client-provider'
+import { ClerkProvider } from '@clerk/nextjs'
 import { Playfair_Display } from 'next/font/google'
 import { HotjarProvider } from '@/components/HotjarProvider'
 
@@ -44,11 +46,15 @@ export default function RootLayout({
           playfair.variable
         )}
       >
-        <HotjarProvider>
-          <Providers>{children}</Providers>
-          <SpeedInsights />
-          <Analytics />
-        </HotjarProvider>
+        <ClerkProvider signInUrl='/sign-in' signUpUrl='/sign-up'>
+          <ConvexClientProvider>
+            <HotjarProvider>
+              <Providers>{children}</Providers>
+              <SpeedInsights />
+              <Analytics />
+            </HotjarProvider>
+          </ConvexClientProvider>
+        </ClerkProvider>
       </body>
     </html>
   )

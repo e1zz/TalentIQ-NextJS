@@ -1,14 +1,14 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { NextRequest, NextResponse } from 'next/server'
 import { anthropic, ASSISTANT_MODEL, ASSISTANT_SYSTEM_PROMPT, DOCUMENT_MIME_TYPES } from '@/lib/anthropic'
-import { isAuthenticated } from '@/lib/utils/supabase/server'
+import { auth } from '@clerk/nextjs/server'
 import type { ChatRequest, ChatStreamEvent, Citation } from '@/types/chat'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
 
 export async function POST(request: NextRequest) {
-  if (!(await isAuthenticated())) {
+  if (!(await auth()).isAuthenticated) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

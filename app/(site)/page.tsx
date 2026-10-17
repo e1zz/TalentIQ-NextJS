@@ -199,7 +199,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <motion.div whileHover={{ scale: 1.05 }}>
                 <Link 
-                  href="/Auth/signIn"
+                  href="/sign-in"
                   className="inline-flex items-center px-8 py-4 rounded-lg bg-linear-to-r from-blue-600 to-blue-500 text-white hover:from-blue-700 hover:to-blue-600 transition-all text-lg font-semibold shadow-lg"
                 >
                   Comienza a Contratar
@@ -256,7 +256,7 @@ export default function Home() {
             Únete a cientos de empresas que ya encuentran su talento tech ideal a través de nuestra plataforma.
           </p>
           <Link 
-            href="/Auth/signIn"
+            href="/sign-in"
             className="inline-flex items-center px-8 py-4 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors text-lg"
           >
             Comienza a Contratar

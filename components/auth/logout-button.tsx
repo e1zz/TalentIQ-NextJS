@@ -1,24 +1,18 @@
 'use client'
 
-import { createClient } from '@/lib/utils/supabase/client'
+import { useClerk } from '@clerk/nextjs'
 import { LogOut } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 
 interface LogoutButtonProps {
   collapsed?: boolean
 }
 
 export default function LogoutButton({ collapsed = false }: LogoutButtonProps) {
-  const router = useRouter()
-  const supabase = createClient()
+  const { signOut } = useClerk()
 
   const handleLogout = async () => {
     try {
-      const { error } = await supabase.auth.signOut()
-      if (error) throw error
-      
-      router.push('/')
-      router.refresh()
+      await signOut({ redirectUrl: '/' })
     } catch (error) {
       console.error('Error signing out:', error)
     }

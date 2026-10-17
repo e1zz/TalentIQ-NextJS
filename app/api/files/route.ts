@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { NextRequest, NextResponse } from 'next/server'
 import { anthropic, DOCUMENT_MIME_TYPES } from '@/lib/anthropic'
-import { isAuthenticated } from '@/lib/utils/supabase/server'
+import { auth } from '@clerk/nextjs/server'
 import type { ContextFile } from '@/types/chat'
 
 // Documents in a Messages request are capped at 32 MB in total.
@@ -17,7 +17,7 @@ function apiError(error: unknown, fallback: string) {
 
 // List the documents uploaded for the assistant (Claude Files API)
 export async function GET() {
-  if (!(await isAuthenticated())) return unauthorized()
+  if (!(await auth()).isAuthenticated) return unauthorized()
 
   try {
     const files: ContextFile[] = []
@@ -38,7 +38,7 @@ export async function GET() {
 
 // Upload a CV or job description once; chat requests reference it by file_id
 export async function POST(request: NextRequest) {
-  if (!(await isAuthenticated())) return unauthorized()
+  if (!(await auth()).isAuthenticated) return unauthorized()
 
   const file = (await request.formData()).get('file')
   if (!(file instanceof File)) {
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  if (!(await isAuthenticated())) return unauthorized()
+  if (!(await auth()).isAuthenticated) return unauthorized()
 
   const { fileId } = await request.json()
   if (typeof fileId !== 'string') {
