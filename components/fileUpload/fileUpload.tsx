@@ -2,25 +2,23 @@
 
 import { useState } from 'react';
 import { Upload } from 'lucide-react';
-import { createClient } from '@/lib/utils/supabase/client';
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 import { errorMessage } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
 interface FileUploadProps {
   onUploadSuccess?: () => void;
   onUploadError?: (error: string) => void;
-  bucketName?: string;
-  selectedLabels?: string[];
 }
 
 const FileUpload = ({ 
   onUploadSuccess, 
-  onUploadError,
-  bucketName = 'candidates',
-  selectedLabels = []
+  onUploadError
 }: FileUploadProps) => {
   const [uploading, setUploading] = useState(false);
-  const supabase = createClient();
+  const generateUploadUrl = useMutation(api.documents.generateUploadUrl);
+  const saveDocument = useMutation(api.documents.saveDocument);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -62,15 +60,16 @@ const FileUpload = ({
       try {
         setUploading(true);
         
-        const { data, error } = await supabase.storage
-          .from(bucketName)
-          .upload(`${Date.now()}-${file.name}`, file, {
-            metadata: {
-              labels: selectedLabels.join(',')
-            }
-          });
-
-        if (error) throw error;
+        // Convex upload: get a short-lived URL, POST the file, then record it
+        const uploadUrl = await generateUploadUrl();
+        const response = await fetch(uploadUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': file.type },
+          body: file
+        });
+        if (!response.ok) throw new Error(`Upload failed (${response.status})`);
+        const { storageId } = await response.json();
+        await saveDocument({ storageId, fileName: file.name, type: 'CV', folder: 'Candidate CVs' });
 
         onUploadSuccess?.();
         resolve('File uploaded successfully!');
