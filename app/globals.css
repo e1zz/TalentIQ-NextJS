@@ -145,6 +145,10 @@
   --color-brand-600: var(--brand-600);
   --color-brand-700: var(--brand-700);
   --color-brand-900: var(--brand-900);
+  /* Marketing hero (Figma Cover): stays deep blue in both themes */
+  --color-hero: var(--hero);
+  --color-hero-glow: var(--hero-glow);
+  --color-hero-muted: var(--hero-muted);
 
   /* Status tones: soft bg, foreground text, dot */
   --color-success: var(--success);
@@ -262,6 +266,9 @@
     --brand-600: #2563eb;
     --brand-700: #1d4ed8;
     --brand-900: #1e3a8a;
+    --hero: #1e3a8a;
+    --hero-glow: #2563eb;
+    --hero-muted: #bfdbfe;
 
     --success: #17b26a;
     --success-soft: #ecfdf3;
@@ -369,6 +376,9 @@
     --brand-600: #2563eb;
     --brand-700: #93c5fd;
     --brand-900: #dbeafe;
+    --hero: #172554;
+    --hero-glow: #1d4ed8;
+    --hero-muted: #bfdbfe;
 
     --success: #17b26a;
     --success-soft: #053321;
