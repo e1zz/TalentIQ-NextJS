@@ -71,3 +71,14 @@ export function greetingFor(t: number): string {
   const hour = Number(fmt({ hour: 'numeric', hourCycle: 'h23' }).format(t))
   return hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
 }
+
+/** `<input type="date">` value ("2026-10-19") to midnight in the org timezone (UTC-6). */
+export function orgDateFromInput(value: string): number {
+  const [y, m, d] = value.split('-').map(Number)
+  return Date.UTC(y, m - 1, d) + 6 * 60 * 60 * 1000
+}
+
+/** Epoch ms to an `<input type="date">` value in the org timezone. */
+export function toDateInput(t: number): string {
+  return new Date(t - 6 * 60 * 60 * 1000).toISOString().slice(0, 10)
+}
