@@ -1,8 +1,9 @@
 'use client'
 
 import { ChevronRight, ChevronLeft, FileText } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { createClient } from '@/lib/utils/supabase/client';
+import { useState } from 'react';
+import { useConvex } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 
 interface Question {
   id: string;
@@ -47,38 +48,24 @@ export default function CandidateSurvey() {
   const [isLoading, setIsLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
   
-  const supabase = createClient();
+  const convex = useConvex();
 
-  // Function to fetch PDFs from Supabase
+  // Candidate CVs uploaded to Convex file storage
   const fetchPDFs = async () => {
     setIsLoading(true);
     try {
-      const { data: files, error } = await supabase
-        .storage
-        .from('resumes') // Replace with your bucket name
-        .list();
-
-      if (error) throw error;
-
-      // Get signed URLs for each PDF
+      const documents = await convex.query(api.documents.list, { folder: 'Candidate CVs' });
       const pdfData = await Promise.all(
-        files
-          .filter(file => file.name.endsWith('.pdf'))
-          .map(async (file) => {
-            const { data: { publicUrl } } = supabase
-              .storage
-              .from('resumes') // Replace with your bucket name
-              .getPublicUrl(file.name);
-
-            return {
-              id: file.id ?? file.name,
-              name: file.name,
-              url: publicUrl
-            };
-          })
+        documents
+          .filter(doc => doc.contentType === 'application/pdf')
+          .map(async doc => ({
+            id: doc._id,
+            name: doc.fileName ?? doc.title,
+            url: (await convex.query(api.documents.getDownloadUrl, { documentId: doc._id })) ?? ''
+          }))
       );
 
-      setPdfs(pdfData);
+      setPdfs(pdfData.filter(pdf => pdf.url));
     } catch (error) {
       console.error('Error fetching PDFs:', error);
     } finally {
