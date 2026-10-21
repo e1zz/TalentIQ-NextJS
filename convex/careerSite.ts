@@ -3,12 +3,15 @@ import { mutation, query } from './_generated/server'
 import { invalid, notFound, requireIdentity, requireUser } from './lib/auth'
 import { buildKpi, getUsersById, metricValue, userRefOrNull } from './lib/domain'
 import { jobCard, openJobs, toJobCards } from './lib/jobCards'
-import { monthKey, resolveNow } from './lib/time'
-import { careerSiteStatus, kpi, userRef } from './lib/validators'
+import { monthKey, orgYear, resolveNow } from './lib/time'
+import { candidateSource, careerSiteStatus, kpi, userRef } from './lib/validators'
 
 const TRAFFIC_SOURCES = ['LinkedIn', 'Google', 'Direct', 'Indeed', 'Other'] as const
+/** Job posting platforms that feed the career site. Each is also a candidate source. */
+const JOB_CHANNELS = ['Career site', 'LinkedIn', 'Indeed'] as const
+const CHANNEL_CANDIDATE_CAP = 500
 
-/** Career site screen: KPIs, page status, traffic sources, checklist and published roles. */
+/** Career site screen: KPIs, page status, traffic sources, job channels, checklist and published roles. */
 export const overview = query({
   args: { now: v.optional(v.number()) },
   returns: v.object({
@@ -25,6 +28,17 @@ export const overview = query({
       })
     ),
     trafficSources: v.array(v.object({ source: v.string(), pct: v.number() })),
+    /** One card per job posting platform: connection status, candidates sourced and hires this year. */
+    channels: v.array(
+      v.object({
+        source: candidateSource,
+        status: v.union(...careerSiteStatus.members, v.literal('Not connected')),
+        /** Capped at `CHANNEL_CANDIDATE_CAP`; `candidatesCapped` is true when there are more. */
+        candidates: v.number(),
+        candidatesCapped: v.boolean(),
+        hiresYtd: v.number()
+      })
+    ),
     checklist: v.object({
       done: v.number(),
       total: v.number(),
@@ -66,6 +80,23 @@ export const overview = query({
         pct: (await metricValue(ctx, 'career_traffic_source_pct', period, source)) ?? 0
       }))
     )
+    const year = String(orgYear(now))
+    const channels = await Promise.all(
+      JOB_CHANNELS.map(async source => {
+        const sourced = await ctx.db
+          .query('candidates')
+          .withIndex('by_source', q => q.eq('source', source))
+          .take(CHANNEL_CANDIDATE_CAP + 1)
+        return {
+          source,
+          // shortcut: only the career site can be connected today; add a channels table when a LinkedIn or Indeed integration ships.
+          status: source === 'Career site' ? (site?.status ?? 'Draft') : ('Not connected' as const),
+          candidates: Math.min(sourced.length, CHANNEL_CANDIDATE_CAP),
+          candidatesCapped: sourced.length > CHANNEL_CANDIDATE_CAP,
+          hiresYtd: (await metricValue(ctx, 'hires_by_source', year, source)) ?? 0
+        }
+      })
+    )
     const jobs = (await openJobs(ctx)).filter(j => j.publishedOnCareerSite)
     jobs.sort((a, b) => (b.postedAt ?? 0) - (a.postedAt ?? 0))
     const checklist = site?.checklist ?? []
@@ -82,6 +113,7 @@ export const overview = query({
           }
         : null,
       trafficSources: trafficSources.filter(t => t.pct > 0),
+      channels,
       checklist: {
         done: checklist.filter(c => c.done).length,
         total: checklist.length,

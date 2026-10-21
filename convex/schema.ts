@@ -132,6 +132,7 @@ export default defineSchema({
     skills: v.array(v.string())
   })
     .index('by_email', ['email'])
+    .index('by_source', ['source'])
     .searchIndex('search_name', { searchField: 'name' }),
 
   applications: defineTable({

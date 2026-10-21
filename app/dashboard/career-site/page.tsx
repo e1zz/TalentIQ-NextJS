@@ -13,7 +13,7 @@ import { KpiCard } from '@/components/screens/kpi'
 import { LoadingRows, Skeleton } from '@/components/screens/skeleton'
 import { formatShortDate, pluralize } from '@/lib/format'
 
-const STATUS_TONE = { Live: 'success', Draft: 'neutral', Paused: 'warning' } as const
+const STATUS_TONE = { Live: 'success', Draft: 'neutral', Paused: 'warning', 'Not connected': 'neutral' } as const
 
 export default function CareerSitePage() {
   const data = useQuery(api.careerSite.overview, {})
@@ -58,6 +58,29 @@ export default function CareerSitePage() {
       <div className='grid gap-4 sm:grid-cols-2 xl:grid-cols-4'>
         {data ? data.kpis.map(k => <KpiCard key={k.key} kpi={k} />) : Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className='h-32' />)}
       </div>
+
+      <SectionCard title='Job channels' titleAs='h2' meta='Where roles are posted and candidates come from'>
+        {data === undefined ? (
+          <LoadingRows rows={3} label='Loading channels' />
+        ) : (
+          <ul className='grid gap-3 md:grid-cols-3'>
+            {data.channels.map(c => (
+              <li key={c.source} className='flex flex-col gap-2 rounded-md border border-border p-4'>
+                <div className='flex items-center justify-between gap-2'>
+                  <span className='text-body font-semibold text-foreground'>{c.source}</span>
+                  <StatusPill tone={STATUS_TONE[c.status]}>{c.status}</StatusPill>
+                </div>
+                <p className='text-meta text-muted-foreground'>
+                  {c.candidatesCapped ? `${c.candidates}+ candidates` : pluralize(c.candidates, 'candidate')} · {pluralize(c.hiresYtd, 'hire')} this year
+                </p>
+                {c.status === 'Not connected' ? (
+                  <p className='text-meta text-muted-foreground'>Posting and sync need {c.source} partner access.</p>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        )}
+      </SectionCard>
 
       <div className='grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]'>
         {/* Preview of the public page */}

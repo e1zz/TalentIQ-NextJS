@@ -57,7 +57,7 @@ Every public function the app can call. Use them from React with `useQuery(api.<
 
 | Function | Kind | Args | Description |
 | --- | --- | --- | --- |
-| `careerSite.overview` | query | `{ now: v.number() (optional) }` | Career site screen: KPIs, page status, traffic sources, checklist and published roles. |
+| `careerSite.overview` | query | `{ now: v.number() (optional) }` | Career site screen: KPIs, page status, traffic sources, job channels (career site, LinkedIn, Indeed), checklist and published roles. |
 | `careerSite.toggleChecklistItem` | mutation | `{ index: v.number() }` | Ticks or unticks a career site checklist item. |
 | `careerSite.setStatus` | mutation | `{ status: careerSiteStatus }` | Sets the career site status (Live, Draft or Paused); going Live records a publish. |
 
